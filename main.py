@@ -535,4 +535,4 @@ async def start_timer():
 
 if __name__ == '__main__':
     app.keep_alive()
-    bot.run('MTE0NjAwODQyMjE0NDI5MDgyNg.GflofK.UhwdID02TJEvbFSuLgZl2OIlf5VVYL6ZGDurSY')
+    bot.run('')
