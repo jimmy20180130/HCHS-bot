@@ -21,3 +21,14 @@
 - /縮網址 <API選項> <網址> <檔案名稱(僅限surl.cc)>
 - /新增公告點閱數 <公告標題> <想新增的點閱數>
 - /關於機器人
+## How to Install
+- First, download the file to your PC
+- Next, extract the file
+- Next, cd to the directory then type
+```
+pip install -r requirements.txt
+```
+- Next, run
+```
+python main.py
+```
