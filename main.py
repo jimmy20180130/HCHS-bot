@@ -68,7 +68,7 @@ async def short_url(ctx, 服務, 網址, 檔案名稱=None):
         await ctx.respond(shorted_url)
         
     elif 服務 == '機器人內建':
-      shorted_url = short_repl_it_url(網址, 'jimmyishandsome')
+      shorted_url = short_repl_it_url(網址, os.environ['key'])
       if shorted_url == 'Invalid key' or shorted_url == 'Invalid URL':
         await ctx.respond('無法連上api')
       else:
