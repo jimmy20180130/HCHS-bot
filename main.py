@@ -76,7 +76,7 @@ async def short_url(ctx, 服務, 網址, 檔案名稱=None):
   else:
     await ctx.respond('無效的網址')
 
-@bot.command(name="關於我", description="黑色麻中")
+@bot.command(name="關於機器人", description="黑色麻中")
 async def about_me(ctx):
   embed = discord.Embed(title="關於我", colour=0x00b0f4, timestamp=datetime.now())
   embed.add_field(name=f"我的名字", value='', inline=False)
