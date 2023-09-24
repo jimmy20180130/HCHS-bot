@@ -1,0 +1,6 @@
+py-cord==2.4.1
+requests==2.31.0
+python-dotenv==1.0.0
+flask==2.3.2
+beautifulsoup4==4.12.2
+validators==0.22.0
