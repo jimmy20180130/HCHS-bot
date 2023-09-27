@@ -9,41 +9,9 @@ from bs4 import BeautifulSoup
 import json
 import random
 import time
-import validators
-from validators.utils import ValidationError
+from func import unquote_unicode, is_string_an_url
 
 app = Flask(__name__)
-
-unichr = chr
-
-
-def unquote_unicode(string, _cache={}):
-  string = unquote(string)  # handle two-digit %hh components first
-  parts = string.split(u'%u')
-  if len(parts) == 1:
-    return parts
-  r = [parts[0]]
-  append = r.append
-  for part in parts[1:]:
-    try:
-      digits = part[:4].lower()
-      if len(digits) < 4:
-        raise ValueError
-      ch = _cache.get(digits)
-      if ch is None:
-        ch = _cache[digits] = unichr(int(digits, 16))
-      if (not r[-1] and u'\uDC00' <= ch <= u'\uDFFF'
-          and u'\uD800' <= r[-2] <= u'\uDBFF'):
-        # UTF-16 surrogate pair, replace with single non-BMP codepoint
-        r[-2] = (r[-2] + ch).encode('utf-16', 'surrogatepass').decode('utf-16')
-      else:
-        append(ch)
-      append(part[4:])
-    except ValueError:
-      append(u'%u')
-      append(part)
-  return u''.join(r)
-
 
 # 用於存儲短網址的字典
 try:
@@ -219,13 +187,6 @@ def show_image():
   return response
 
 
-def is_string_an_url(url_string: str) -> bool:
-  if ValidationError:
-    return False
-  result = validators.url(url_string)
-  return result
-
-
 # 將短網址映射到原始URL
 @app.route('/shorturl', methods=['GET'])
 def create_short_url():
@@ -253,7 +214,7 @@ def create_short_url():
   if not validate_key(key):
     return "Invalid key", 401
   elif existing_short_key:
-    return f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/redirect?short_key={existing_short_key}'
+    return f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/{existing_short_key}'
   elif is_string_an_url(decoded_url) == False:
     return "Invalid URL", 404
 
@@ -267,7 +228,7 @@ def create_short_url():
   with open('short_urls.json', 'w') as file:
     json.dump(short_urls, file, indent=4)
 
-  return f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/redirect?short_key={short_key}'
+  return f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/{short_key}'
 
 
 @app.route('/<key>', methods=['GET'])
