@@ -10,6 +10,7 @@ import json
 import random
 import time
 from func import unquote_unicode, is_string_an_url
+import os
 
 app = Flask(__name__)
 
@@ -23,7 +24,7 @@ except FileNotFoundError:
 
 # 驗證key的函數
 def validate_key(key):
-  return key == "jimmyishandsome"
+  return key == os.environ['key']
 
 
 # 生成唯一的短網址的key

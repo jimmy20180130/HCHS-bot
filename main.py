@@ -17,6 +17,8 @@ from url_shortener import shrtco_de, shorts_url, short_88nb_cc, surl_cc, urlcc_c
 tracemalloc.start()
 intents = discord.Intents().all()
 bot = discord.Bot(intents=intents)
+TOKEN = os.environ['bot_token']
+SHORT_URL_KEY = os.environ['key']
 
 
 @bot.event
@@ -75,7 +77,7 @@ async def short_url(ctx, 服務, 網址, 檔案名稱=None):
         await ctx.respond(shorted_url)
 
     elif 服務 == '機器人內建':
-      shorted_url = short_repl_it_url(網址, os.environ['key'])
+      shorted_url = short_repl_it_url(網址, SHORT_URL_KEY)
       if shorted_url == 'Invalid key' or shorted_url == 'Invalid URL':
         await ctx.respond('無法連上api')
       else:
@@ -289,7 +291,7 @@ async def search(ctx, 公告標題):
       if type(file_name) == list:
         file_name = file_name[0]
       file_link = f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/?id={news_id}&news_unique_id={news_unique_id}&res_folder={resource_folder}&res_name={file_name}'
-      shorted_url = shorts_url(short_repl_it_url(file_link, os.environ['key']),
+      shorted_url = shorts_url(short_repl_it_url(file_link, SHORT_URL_KEY),
                                file_name, None)
       attachments.append(str(shorted_url))
       time.sleep(0.2)
@@ -377,7 +379,7 @@ async def search(ctx, 公告標題):
     # pic links
     if image_links:
       image_links_formatted = "\n".join([
-          f"`圖片{id}` | {shorts_url(short_repl_it_url(f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/images?id={news_id}&name={image_filename}', os.environ['key']), image_filename, 'image')}"
+          f"`圖片{id}` | {shorts_url(short_repl_it_url(f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/images?id={news_id}&name={image_filename}', SHORT_URL_KEY), image_filename, 'image')}"
           for id, image_filename in enumerate(image_links, start=1)
       ])
       embed.add_field(name="圖片", value=image_links_formatted, inline=False)
@@ -455,7 +457,7 @@ async def search(ctx, 公告id):
       if type(file_name) == list:
         file_name = file_name[0]
       file_link = f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/?id={公告id}&news_unique_id={news_unique_id}&res_folder={resource_folder}&res_name={file_name}'
-      shorted_url = shorts_url(short_repl_it_url(file_link, os.environ['key']),
+      shorted_url = shorts_url(short_repl_it_url(file_link, SHORT_URL_KEY),
                                file_name, None)
       attachments.append(str(shorted_url))
       time.sleep(0.2)
@@ -543,7 +545,7 @@ async def search(ctx, 公告id):
     # image links
     if image_links:
       image_links_formatted = "\n".join([
-          f"`圖片{id}` | {shorts_url(short_repl_it_url(f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/images?id={公告id}&name={image_filename}', os.environ['key']), image_filename, 'image')}"
+          f"`圖片{id}` | {shorts_url(short_repl_it_url(f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/images?id={公告id}&name={image_filename}', SHORT_URL_KEY), image_filename, 'image')}"
           for id, image_filename in enumerate(image_links, start=1)
       ])
       embed.add_field(name="圖片", value=image_links_formatted, inline=False)
@@ -623,7 +625,7 @@ async def start_timer():
               file_name = file_name[0]
             file_link = f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/?id={key}&news_unique_id={news_unique_id}&res_folder={resource_folder}&res_name={file_name}'
             shorted_url = shorts_url(
-                short_repl_it_url(file_link, os.environ['key']), file_name,
+                short_repl_it_url(file_link, SHORT_URL_KEY), file_name,
                 None)
             attachments.append(str(shorted_url))
             time.sleep(0.2)
@@ -716,7 +718,7 @@ async def start_timer():
           # image links
           if image_links:
             image_links_formatted = "\n".join([
-                f"`圖片{id}` | {shorts_url(short_repl_it_url(f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/images?id={key}&name={image_filename}', os.environ['key']), image_filename, 'image')}"
+                f"`圖片{id}` | {shorts_url(short_repl_it_url(f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/images?id={key}&name={image_filename}', SHORT_URL_KEY), image_filename, 'image')}"
                 for id, image_filename in enumerate(image_links, start=1)
             ])
             embed.add_field(name="圖片",
@@ -776,4 +778,4 @@ async def start_timer():
 
 if __name__ == '__main__':
   app.keep_alive()
-  bot.run(os.environ['bot_token'])
+  bot.run(TOKEN)
