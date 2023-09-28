@@ -85,7 +85,7 @@ def detect_and_resolve_duplicates():
               resolved_data[key] = value
       else:
           resolved_data[key] = value
-  resolved_data = dict(sorted(news.items()))
+  resolved_data = {str(k): v for k, v in sorted(news.items(), key=lambda item: int(item[0]))}
   with open('news.json', 'w', encoding='utf-8') as file:
     json.dump(resolved_data, file, indent=4)
     
