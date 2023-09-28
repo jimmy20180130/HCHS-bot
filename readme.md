@@ -58,3 +58,4 @@
    ```bash
    python main.py
 ## 操作方式(在repl.it上跑)
+- [請看此影片](https://www.google.com)
