@@ -4,7 +4,7 @@
 - 邀請機器人👉 (https://discord.com/api/oauth2/authorize?client_id=1146008422144290826&permissions=40667102838353&scope=bot%20applications.commands)
 - 加入Discord伺服器👉 (https://discord.gg/5UrGWXf3ba)
 - 訂閱我👉 (https://www.youtube.com/@JimmyXiaoXi)
-## Features
+## 特色/功能
 - ✅可以新增學校公告的點閱數
 - ✅在Discord就可以輕鬆看到學校的公告
 - ✅可自動發送最新公告至你指定的頻道
@@ -14,21 +14,28 @@
 - ✅擺脫學校網站查看檔案的限制([請看此影片](https://www.google.com/))
 - ✅機器人有免費縮網址服務，並提供五種選項
 ## 指令列表
-- /尋找公告 <公告標題>
+
+- /尋找公告 <公告標題> 
 - /用id尋找公告 <公告ID>
 - /設定新公告發送頻道 <想要設定讓公告自動發送的頻道>
 - /移除新公告發送頻道 <想從自動發送頻道列表中刪除的頻道>
 - /縮網址 <API選項> <網址> <檔案名稱(僅限surl.cc)>
 - /新增公告點閱數 <公告標題> <想新增的點閱數>
 - /關於機器人
-## How to Install
-- First, download the file to your PC
-- Next, extract the file
-- Next, cd to the directory then type
+# 不想用我的機器人?
+## 需求
+## 操作方式(在自己電腦上跑)
+- 點右上角的Download按鈕，把檔案下載到您的電腦上並解壓縮
+- 輸入以下指令或是在你存放檔案資料夾裡面點右鍵->在終端機中開啟
+```
+cd <你的檔案存放的資料夾名稱>
+```
+- 輸入以下指令來安裝必要之套件
 ```
 pip install -r requirements.txt
 ```
-- Next, run
+- 接著使用底下的指令來執行
 ```
 python main.py
 ```
+## 操作方式(在repl.it上跑)
