@@ -11,7 +11,7 @@ import asyncio
 import time
 import os
 import tracemalloc
-from func import unquote_unicode, is_string_an_url, update_news_count
+from func import unquote_unicode, is_string_an_url, update_news_count, detect_and_resolve_duplicates
 from url_shortener import shrtco_de, shorts_url, short_88nb_cc, surl_cc, urlcc_cc, short_repl_it_url
 
 tracemalloc.start()
@@ -254,7 +254,9 @@ async def search(ctx, 公告標題):
 
     # find all value
     for key, value in news.items():
-      if value.startswith(公告標題):
+      if len(value)==100 and value.startswith(公告標題):
+        news_id = key
+      elif len(value)<100 and value==公告標題:
         news_id = key
 
     url = f"https://www.hchs.hc.edu.tw/ischool/public/news_view/show.php?nid={news_id}"
@@ -319,6 +321,13 @@ async def search(ctx, 公告標題):
             p.get_text(strip=True) for p in paragraphs[1:]
             if p.get_text(strip=True)
         ])
+        if text=="\n" or text is None or text=="":
+          divs = content.find_all('div')
+          div_text = '\n'.join([
+              div.get_text(strip=True) for div in divs[1:]
+              if div.get_text(strip=True)
+          ])
+          return div_text
         return text
 
     content = soup.find('div', id='content')
@@ -478,6 +487,13 @@ async def search(ctx, 公告id):
             p.get_text(strip=True) for p in paragraphs[1:]
             if p.get_text(strip=True)
         ])
+        if text=="\n" or text is None or text=="":
+          divs = content.find_all('div')
+          div_text = '\n'.join([
+              div.get_text(strip=True) for div in divs[1:]
+              if div.get_text(strip=True)
+          ])
+          return div_text
         return text
 
     content = soup.find('div', id='content')
@@ -630,8 +646,7 @@ async def start_timer():
                 text_list = []
                 for row in rows:
                   cells = row.find_all('td')
-                  row_text = '\t'.join(
-                      [cell.get_text(strip=True) for cell in cells])
+                  row_text = '\t'.join([cell.get_text(strip=True) for cell in cells])
                   text_list.append(row_text)
 
                 return '\n'.join(text_list)
@@ -641,6 +656,13 @@ async def start_timer():
                   p.get_text(strip=True) for p in paragraphs[1:]
                   if p.get_text(strip=True)
               ])
+              if text=="\n" or text is None or text=="":
+                divs = content.find_all('div')
+                div_text = '\n'.join([
+                    div.get_text(strip=True) for div in divs[1:]
+                    if div.get_text(strip=True)
+                ])
+                return div_text
               return text
 
           content = soup.find('div', id='content')
@@ -743,9 +765,11 @@ async def start_timer():
               except Exception as e:
                 print(e)
                 continue
-
+    
     with open('news.json', 'w', encoding='utf-8') as news_file:
       json.dump(news, news_file, ensure_ascii=False, indent=4)
+      
+    detect_and_resolve_duplicates()
 
     await asyncio.sleep(3600)
 

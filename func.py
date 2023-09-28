@@ -1,6 +1,7 @@
 import requests
 from urllib.parse import unquote
 import re
+import json
 
 unichr = chr
 
@@ -64,3 +65,28 @@ def update_news_count(a):
   except requests.exceptions.RequestException as e:
     print("error:", e)
     return 'error'
+
+
+
+def detect_and_resolve_duplicates():
+  with open('news.json', 'r', encoding='utf-8') as news_file:
+    news = json.load(news_file)
+  value_counts = {}
+  resolved_data = {}
+
+  for key, value in news.items():
+      if value != "None":
+          if value in value_counts:
+              value_counts[value] += 1
+              new_value = f"{value}{value_counts[value]}"
+              resolved_data[key] = new_value
+          else:
+              value_counts[value] = 1
+              resolved_data[key] = value
+      else:
+          resolved_data[key] = value
+  resolved_data = dict(sorted(news.items()))
+  with open('news.json', 'w', encoding='utf-8') as file:
+    json.dump(resolved_data, file, indent=4)
+    
+  return
