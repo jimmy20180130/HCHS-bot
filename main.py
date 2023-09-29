@@ -17,8 +17,8 @@ from url_shortener import shrtco_de, shorts_url, short_88nb_cc, surl_cc, urlcc_c
 tracemalloc.start()
 intents = discord.Intents().all()
 bot = discord.Bot(intents=intents)
-TOKEN = 'token' # os.environ['bot_token']
-SHORT_URL_KEY = 'key' # os.environ['key']
+TOKEN = os.environ['bot_token']
+SHORT_URL_KEY = os.environ['key']
 
 
 @bot.event
@@ -256,9 +256,9 @@ async def search(ctx, 公告標題):
 
     # find all value
     for key, value in news.items():
-      if len(value)==100 and value.startswith(公告標題):
+      if len(value) == 100 and value.startswith(公告標題):
         news_id = key
-      elif len(value)<100 and value==公告標題:
+      elif len(value) < 100 and value == 公告標題:
         news_id = key
 
     url = f"https://www.hchs.hc.edu.tw/ischool/public/news_view/show.php?nid={news_id}"
@@ -323,7 +323,7 @@ async def search(ctx, 公告標題):
             p.get_text(strip=True) for p in paragraphs[1:]
             if p.get_text(strip=True)
         ])
-        if text=="\n" or text is None or text=="":
+        if text == "\n" or text is None or text == "":
           divs = content.find_all('div')
           div_text = '\n'.join([
               div.get_text(strip=True) for div in divs[1:]
@@ -364,7 +364,7 @@ async def search(ctx, 公告標題):
     embed.add_field(name="單位", value=info_unit, inline=False)
     embed.add_field(name="張貼人", value=info_person, inline=False)
     embed.add_field(name="張貼日期", value=info_time, inline=False)
-    if formatted_text != '' or formatted_text != None:
+    if formatted_text != '' and formatted_text != None and formatted_text != "\n":
       embed.add_field(name="內容", value=formatted_text[:1024], inline=False)
     else:
       embed.add_field(name='內容', value='無', inline=False)
@@ -489,7 +489,7 @@ async def search(ctx, 公告id):
             p.get_text(strip=True) for p in paragraphs[1:]
             if p.get_text(strip=True)
         ])
-        if text=="\n" or text is None or text=="":
+        if text == "\n" or text is None or text == "":
           divs = content.find_all('div')
           div_text = '\n'.join([
               div.get_text(strip=True) for div in divs[1:]
@@ -530,7 +530,7 @@ async def search(ctx, 公告id):
     embed.add_field(name="單位", value=info_unit, inline=False)
     embed.add_field(name="張貼人", value=info_person, inline=False)
     embed.add_field(name="張貼日期", value=info_time, inline=False)
-    if formatted_text != '' or formatted_text != None:
+    if formatted_text != '' and formatted_text != None and formatted_text != "\n":
       embed.add_field(name="內容", value=formatted_text[:1024], inline=False)
     else:
       embed.add_field(name='內容', value='無', inline=False)
@@ -625,8 +625,7 @@ async def start_timer():
               file_name = file_name[0]
             file_link = f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/?id={key}&news_unique_id={news_unique_id}&res_folder={resource_folder}&res_name={file_name}'
             shorted_url = shorts_url(
-                short_repl_it_url(file_link, SHORT_URL_KEY), file_name,
-                None)
+                short_repl_it_url(file_link, SHORT_URL_KEY), file_name, None)
             attachments.append(str(shorted_url))
             time.sleep(0.2)
 
@@ -648,7 +647,8 @@ async def start_timer():
                 text_list = []
                 for row in rows:
                   cells = row.find_all('td')
-                  row_text = '\t'.join([cell.get_text(strip=True) for cell in cells])
+                  row_text = '\t'.join(
+                      [cell.get_text(strip=True) for cell in cells])
                   text_list.append(row_text)
 
                 return '\n'.join(text_list)
@@ -658,7 +658,7 @@ async def start_timer():
                   p.get_text(strip=True) for p in paragraphs[1:]
                   if p.get_text(strip=True)
               ])
-              if text=="\n" or text is None or text=="":
+              if text == "\n" or text is None or text == "":
                 divs = content.find_all('div')
                 div_text = '\n'.join([
                     div.get_text(strip=True) for div in divs[1:]
@@ -699,10 +699,8 @@ async def start_timer():
           embed.add_field(name="單位", value=info_unit, inline=False)
           embed.add_field(name="張貼人", value=info_person, inline=False)
           embed.add_field(name="張貼日期", value=info_time, inline=False)
-          if formatted_text != '' or formatted_text != None:
-            embed.add_field(name="內容",
-                            value=formatted_text[:1024],
-                            inline=False)
+          if formatted_text != '' and formatted_text != None and formatted_text != "\n":
+            embed.add_field(name="內容", value=formatted_text[:1024], inline=False)
           else:
             embed.add_field(name='內容', value='無', inline=False)
           # attachments
@@ -767,10 +765,10 @@ async def start_timer():
               except Exception as e:
                 print(e)
                 continue
-    
+
     with open('news.json', 'w', encoding='utf-8') as news_file:
       json.dump(news, news_file, ensure_ascii=False, indent=4)
-      
+
     detect_and_resolve_duplicates()
 
     await asyncio.sleep(3600)
