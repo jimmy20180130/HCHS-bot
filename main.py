@@ -180,11 +180,15 @@ async def add_news_clicks(ctx, 公告id, 點閱數: Option(int, '欲新增的點
             response.raise_for_status()
           now_times += 1
           print(f'已新增{now_times}次點閱數')
-          await message.edit(f'已新增{now_times}次點閱數')
+          await message.edit(f'預計至少{7.5 * 點閱數}秒後完成\n已新增{now_times}次點閱數')
           await asyncio.sleep(0.5)
-        await message.reply(
-            f'已新增{點閱數}次點閱數\n點閱數已新增完成\n你可以至[這個網站](https://www.hchs.hc.edu.tw/ischool/widget/site_news/main2.php?uid=WID_0_2_0516b5aba93b58b0547367faafb2f1dbe2ebba4c&maximize=1&allbtn=0)中尋找標題**{公告id}**並查看結果'
-        )
+        embed = discord.Embed(title="已新增公告點閱數",
+                      colour=0x00b0f4,
+                      timestamp=datetime.now())
+        embed.add_field(name="點閱數", value="value", inline=False)
+        embed.add_field(name="公告標題", value="", inline=False)
+        embed.set_footer(text="黑色麻中", icon_url="https://cdn.discordapp.com/avatars/1146008422144290826/13051e7a68067c42c417f3aa04de2ffa.webp")
+        await message.reply(embed=embed)
     except Exception as e:
       print(e)
       await ctx.respond(f'```{e}```')
