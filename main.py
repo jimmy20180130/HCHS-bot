@@ -50,10 +50,14 @@ async def get_id(ctx: discord.AutocompleteContext):
 @option('網址', description='想縮短的網址')
 @option('檔案名稱', description='想使用的檔案名稱(only surl.cc)')
 async def short_url(ctx, 服務, 網址, 檔案名稱=None):
+
   async def shorting_url():
     if is_string_an_url(網址) is not False:
       if 服務 == 'surl.cc':
-        shorted_url = surl_cc(網址, 檔案名稱)
+        if 檔案名稱 is not None:
+          shorted_url = surl_cc(網址, 檔案名稱)
+        else:
+          shorted_url = surl_cc(網址)
         if shorted_url == 'error':
           await ctx.respond('無法連上api')
         else:
@@ -88,16 +92,19 @@ async def short_url(ctx, 服務, 網址, 檔案名稱=None):
           await ctx.respond(shorted_url)
     else:
       await ctx.respond('無效的網址')
+
   await shorting_url()
+
 
 @short_url.error
 async def short_url_error(ctx, error):
   if isinstance(error, commands.CommandOnCooldown):
     # 冷卻時間還未到達，顯示剩餘時間
     remaining_time = round(error.retry_after, 2)
-    await ctx.respond(f"您目前的狀態為中，剩餘 {remaining_time} 秒後解除冷卻。")
+    await ctx.respond(f"您目前的狀態為冷卻中，剩餘 {remaining_time} 秒後解除冷卻。")
   elif isinstance(error, commands.MaxConcurrencyReached):
     await ctx.respond("目前因多人同時使用此功能，請稍後再試")
+
 
 @bot.command(name="關於機器人", description="黑色麻中")
 async def about_me(ctx):
@@ -188,7 +195,7 @@ async def add_news_clicks_error(ctx, error):
   if isinstance(error, commands.CommandOnCooldown):
     # 冷卻時間還未到達，顯示剩餘時間
     remaining_time = round(error.retry_after, 2)
-    await ctx.respond(f"您目前的狀態為中，剩餘 {remaining_time} 秒後解除冷卻。")
+    await ctx.respond(f"您目前的狀態為冷卻中，剩餘 {remaining_time} 秒後解除冷卻。")
   elif isinstance(error, commands.MaxConcurrencyReached):
     await ctx.respond("目前因多人同時使用此功能，請稍後再試")
 
@@ -713,7 +720,9 @@ async def start_timer():
           embed.add_field(name="張貼人", value=info_person, inline=False)
           embed.add_field(name="張貼日期", value=info_time, inline=False)
           if formatted_text != '' and formatted_text != None and formatted_text != "\n":
-            embed.add_field(name="內容", value=formatted_text[:1024], inline=False)
+            embed.add_field(name="內容",
+                            value=formatted_text[:1024],
+                            inline=False)
           else:
             embed.add_field(name='內容', value='無', inline=False)
           # attachments
