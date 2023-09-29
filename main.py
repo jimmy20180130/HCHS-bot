@@ -17,8 +17,8 @@ from url_shortener import shrtco_de, shorts_url, short_88nb_cc, surl_cc, urlcc_c
 tracemalloc.start()
 intents = discord.Intents().all()
 bot = discord.Bot(intents=intents)
-TOKEN = os.environ['bot_token']
-SHORT_URL_KEY = os.environ['key']
+TOKEN = 'token' # os.environ['bot_token']
+SHORT_URL_KEY = 'key' # os.environ['key']
 
 
 @bot.event

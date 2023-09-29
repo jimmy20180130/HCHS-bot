@@ -13,6 +13,7 @@ from func import unquote_unicode, is_string_an_url
 import os
 
 app = Flask(__name__)
+SHORT_URL_KEY = 'key' # os.environ['key']
 
 # 用於存儲短網址的字典
 try:
@@ -24,7 +25,7 @@ except FileNotFoundError:
 
 # 驗證key的函數
 def validate_key(key):
-  return key == os.environ['key']
+  return key == SHORT_URL_KEY
 
 
 # 生成唯一的短網址的key
