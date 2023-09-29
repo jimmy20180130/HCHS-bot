@@ -51,43 +51,37 @@ def surl_cc(url, filename=None):
   try:
     if ssur_cc_shorted_url_custom:
       return ssur_cc_shorted_url_custom
-    else:
-      shortener_url = f'https://ssur.cc/api.php?appkey={ssur_cc_key}&longurl={url}'
-      shorted_url = requests.get(shortener_url).text
-      return shorted_url
   except Exception as e:
     print(f'連接到ssur.cc的api時發生了一個錯誤\n{e}')
     return 'error'
 
 
 def short_88nb_cc(url):
-  short_88nb_cc_key_list = [
-      'ea8d7b3ded', 'b89377c881', 'b6fc6a3133', '44ccb4f4b2', '120ef9330f'
-  ]
-  short_88nb_cc_key = random.choice(short_88nb_cc_key_list)
-  # timestamp
-  timestamp = str(int(time.time()))
-  api_url = 'https://88nb.cc/88nb-api.php'
-  # signature
-  signature = hashlib.md5((timestamp + short_88nb_cc_key).encode()).hexdigest()
-
-  # data
-  data = {
-      'url': url,
-      'action': 'shorturl',
-      'timestamp': timestamp,
-      'signature': signature
-  }
-
-  # POST request
-  short_88nb_cc_shorted_url_response = requests.post(api_url, data=data).text
-  root = ET.fromstring(short_88nb_cc_shorted_url_response)
-  try:
-    short_88nb_cc_shorted_url = root.find(".//shorturl")
-    return short_88nb_cc_shorted_url
-  except Exception as e:
-    print(f'連接到88nb.cc的api時發生了一個錯誤\n{e}')
-    return 'error'
+    short_88nb_cc_key_list = [
+        'ea8d7b3ded', 'b89377c881', 'b6fc6a3133', '44ccb4f4b2', '120ef9330f'
+    ]
+    short_88nb_cc_key = random.choice(short_88nb_cc_key_list)
+    # timestamp
+    timestamp = str(int(time.time()))
+    api_url = 'https://88nb.cc/88nb-api.php'
+    # signature
+    signature = hashlib.md5((timestamp + short_88nb_cc_key).encode()).hexdigest()
+    # data
+    data = {
+        'url': url,
+        'action': 'shorturl',
+        'timestamp': timestamp,
+        'signature': signature
+    }
+    # POST request
+    short_88nb_cc_shorted_url_response = requests.post(api_url, data=data).text
+    root = ET.fromstring(short_88nb_cc_shorted_url_response)
+    try:
+      short_88nb_cc_shorted_url = root.find("./shorturl").text
+      return short_88nb_cc_shorted_url
+    except Exception as e:
+      print(f'連接到88nb.cc的api時發生了一個錯誤\n{e}')
+      return 'error'
 
 
 def urlcc_cc(url):

@@ -41,50 +41,63 @@ async def get_id(ctx: discord.AutocompleteContext):
 
 
 @bot.command(name="縮網址", description="機器人的附加功能")
+# 添加命令冷卻，限制該指令的觸發頻率
+@commands.cooldown(1, 10, commands.BucketType.user)
+@commands.max_concurrency(3, per=commands.BucketType.default, wait=False)
 @option('服務',
         description='想使用的縮網址服務',
         choices=["surl.cc", "88nb.cc", "urlcc.cc", "shrtco.de", "機器人內建"])
 @option('網址', description='想縮短的網址')
 @option('檔案名稱', description='想使用的檔案名稱(only surl.cc)')
 async def short_url(ctx, 服務, 網址, 檔案名稱=None):
-  if is_string_an_url(網址) is not False:
-    if 服務 == 'surl.cc':
-      shorted_url = surl_cc(網址, 檔案名稱)
-      if shorted_url == 'error':
-        await ctx.respond('無法連上api')
-      else:
-        await ctx.respond(shorted_url)
+  async def shorting_url():
+    if is_string_an_url(網址) is not False:
+      if 服務 == 'surl.cc':
+        shorted_url = surl_cc(網址, 檔案名稱)
+        if shorted_url == 'error':
+          await ctx.respond('無法連上api')
+        else:
+          await ctx.respond(shorted_url)
 
-    elif 服務 == '88nb.cc':
-      shorted_url = short_88nb_cc(網址)
-      if shorted_url == 'error':
-        await ctx.respond('無法連上api')
-      else:
-        await ctx.respond(shorted_url)
+      elif 服務 == '88nb.cc':
+        shorted_url = short_88nb_cc(網址)
+        if shorted_url == 'error':
+          await ctx.respond('無法連上api')
+        else:
+          await ctx.respond(shorted_url)
 
-    elif 服務 == 'urlcc.cc':
-      shorted_url = urlcc_cc(網址)
-      if shorted_url == 'error':
-        await ctx.respond('無法連上api')
-      else:
-        await ctx.respond(shorted_url)
+      elif 服務 == 'urlcc.cc':
+        shorted_url = urlcc_cc(網址)
+        if shorted_url == 'error':
+          await ctx.respond('無法連上api')
+        else:
+          await ctx.respond(shorted_url)
 
-    elif 服務 == 'shrtco.de':
-      shorted_url = shrtco_de(網址)
-      if shorted_url == 'error':
-        await ctx.respond('無法連上api')
-      else:
-        await ctx.respond(shorted_url)
+      elif 服務 == 'shrtco.de':
+        shorted_url = shrtco_de(網址)
+        if shorted_url == 'error':
+          await ctx.respond('無法連上api')
+        else:
+          await ctx.respond(shorted_url)
 
-    elif 服務 == '機器人內建':
-      shorted_url = short_repl_it_url(網址, SHORT_URL_KEY)
-      if shorted_url == 'Invalid key' or shorted_url == 'Invalid URL':
-        await ctx.respond('無法連上api')
-      else:
-        await ctx.respond(shorted_url)
-  else:
-    await ctx.respond('無效的網址')
+      elif 服務 == '機器人內建':
+        shorted_url = short_repl_it_url(網址, SHORT_URL_KEY)
+        if shorted_url == 'Invalid key' or shorted_url == 'Invalid URL':
+          await ctx.respond('無法連上api')
+        else:
+          await ctx.respond(shorted_url)
+    else:
+      await ctx.respond('無效的網址')
+  await shorting_url()
 
+@short_url.error
+async def short_url_error(ctx, error):
+  if isinstance(error, commands.CommandOnCooldown):
+    # 冷卻時間還未到達，顯示剩餘時間
+    remaining_time = round(error.retry_after, 2)
+    await ctx.respond(f"您目前的狀態為中，剩餘 {remaining_time} 秒後解除冷卻。")
+  elif isinstance(error, commands.MaxConcurrencyReached):
+    await ctx.respond("目前因多人同時使用此功能，請稍後再試")
 
 @bot.command(name="關於機器人", description="黑色麻中")
 async def about_me(ctx):
