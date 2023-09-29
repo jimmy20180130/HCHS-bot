@@ -111,7 +111,7 @@ async def short_url_error(ctx, error):
 @bot.command(name="關於機器人", description="黑色麻中")
 async def about_me(ctx):
   embed = discord.Embed(title="關於我", colour=0x00b0f4, timestamp=datetime.now())
-  embed.add_field(name=f"我的名字", value='', inline=False)
+  embed.add_field(name=f"我的名字", value='黑色麻中ㄐㄐ人', inline=False)
   embed.add_field(name=f"我的作者", value='<@971730686685880322>', inline=False)
   embed.add_field(name=f"版本", value='2.0', inline=False)
   embed.add_field(
