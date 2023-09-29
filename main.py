@@ -52,6 +52,7 @@ async def get_id(ctx: discord.AutocompleteContext):
 async def short_url(ctx, 服務, 網址, 檔案名稱=None):
 
   async def shorting_url():
+    await ctx.defer()
     if is_string_an_url(網址) is not False:
       if 服務 == 'surl.cc':
         if 檔案名稱 is not None:
@@ -61,6 +62,7 @@ async def short_url(ctx, 服務, 網址, 檔案名稱=None):
         if shorted_url == 'error':
           await ctx.respond('無法連上api')
         else:
+          print(shorted_url)
           await ctx.respond(shorted_url)
 
       elif 服務 == '88nb.cc':
@@ -411,7 +413,7 @@ async def search(ctx, 公告標題):
         icon_url=
         "https://cdn.discordapp.com/avatars/1146008422144290826/13051e7a68067c42c417f3aa04de2ffa.webp"
     )
-    await message.edit(embed=embed)
+    await message.edit(content="", embed=embed)
   except Exception as e:
     embed = discord.Embed(title="發生了錯誤",
                           description=f'```{e}```',
@@ -423,7 +425,7 @@ async def search(ctx, 公告標題):
         "https://cdn.discordapp.com/avatars/1146008422144290826/13051e7a68067c42c417f3aa04de2ffa.webp"
     )
 
-    await message.edit(embed=embed)
+    await message.edit(content="", embed=embed)
 
 
 async def get_id2(ctx: discord.AutocompleteContext):
@@ -446,7 +448,7 @@ async def get_id2(ctx: discord.AutocompleteContext):
 async def search(ctx, 公告id):
   await ctx.defer()
   try:
-    await ctx.respond('資料處理中，請稍後')
+    message = await ctx.respond('資料處理中，請稍後')
     url = f"https://www.hchs.hc.edu.tw/ischool/public/news_view/show.php?nid={公告id}"
 
     # GET request
@@ -577,7 +579,7 @@ async def search(ctx, 公告id):
         icon_url=
         "https://cdn.discordapp.com/avatars/1146008422144290826/13051e7a68067c42c417f3aa04de2ffa.webp"
     )
-    await ctx.respond(embed=embed)
+    await message.edit(content="", embed=embed)
   except Exception as e:
     embed = discord.Embed(title="發生了錯誤",
                           description=f'```{e}```',
@@ -589,7 +591,7 @@ async def search(ctx, 公告id):
         "https://cdn.discordapp.com/avatars/1146008422144290826/13051e7a68067c42c417f3aa04de2ffa.webp"
     )
 
-    await ctx.edit(embed=embed)
+    await message.edit(content="", embed=embed)
 
 
 async def start_timer():
