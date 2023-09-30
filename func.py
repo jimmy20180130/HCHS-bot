@@ -47,7 +47,7 @@ def is_string_an_url(url_string: str) -> bool:
   return link
 
 
-def update_news_count(a):
+async def update_news_count(a):
   url = f"https://www.hchs.hc.edu.tw/ischool/widget/site_news/update_news_clicks.php?newsId={a}"
   try:
     # 讀取代理伺服器列表
@@ -67,7 +67,6 @@ def update_news_count(a):
     return 'error'
 
 
-
 def detect_and_resolve_duplicates():
   with open('news.json', 'r', encoding='utf-8') as news_file:
     news = json.load(news_file)
@@ -75,18 +74,21 @@ def detect_and_resolve_duplicates():
   resolved_data = {}
 
   for key, value in news.items():
-      if value != "None":
-          if value in value_counts:
-              value_counts[value] += 1
-              new_value = f"{value}{value_counts[value]}"
-              resolved_data[key] = new_value
-          else:
-              value_counts[value] = 1
-              resolved_data[key] = value
+    if value != "None":
+      if value in value_counts:
+        value_counts[value] += 1
+        new_value = f"{value}{value_counts[value]}"
+        resolved_data[key] = new_value
       else:
-          resolved_data[key] = value
-  resolved_data = {str(k): v for k, v in sorted(news.items(), key=lambda item: int(item[0]))}
+        value_counts[value] = 1
+        resolved_data[key] = value
+    else:
+      resolved_data[key] = value
+  resolved_data = {
+      str(k): v
+      for k, v in sorted(news.items(), key=lambda item: int(item[0]))
+  }
   with open('news.json', 'w') as file:
     json.dump(resolved_data, file, indent=4)
-    
+
   return

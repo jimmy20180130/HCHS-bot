@@ -174,7 +174,7 @@ async def add_news_clicks(ctx, 公告id, 點閱數: Option(int, '欲新增的點
 
         now_times = 0
         while now_times < loop_times:
-          if update_news_count(str(news_id[0])) == 'error':
+          if await update_news_count(str(news_id[0])) == 'error':
             url = f"https://www.hchs.hc.edu.tw/ischool/widget/site_news/update_news_clicks.php?newsId={news_id[0]}"
             response = requests.get(url, timeout=20)
             response.raise_for_status()
@@ -183,11 +183,19 @@ async def add_news_clicks(ctx, 公告id, 點閱數: Option(int, '欲新增的點
           await message.edit(f'預計至少{7.5 * 點閱數}秒後完成\n已新增{now_times}次點閱數')
           await asyncio.sleep(0.5)
         embed = discord.Embed(title="已新增公告點閱數",
-                      colour=0x00b0f4,
-                      timestamp=datetime.now())
-        embed.add_field(name="點閱數", value="value", inline=False)
-        embed.add_field(name="公告標題", value="", inline=False)
-        embed.set_footer(text="黑色麻中", icon_url="https://cdn.discordapp.com/avatars/1146008422144290826/13051e7a68067c42c417f3aa04de2ffa.webp")
+                              colour=0x00b0f4,
+                              timestamp=datetime.now())
+        embed.add_field(name="點閱數", value=點閱數, inline=False)
+        embed.add_field(
+            name="公告標題",
+            value=
+            f"在[這個網頁](https://www.hchs.hc.edu.tw/ischool/widget/site_news/main2.php?uid=WID_0_2_0516b5aba93b58b0547367faafb2f1dbe2ebba4c&maximize=1&allbtn=0)尋找**{公告id}**",
+            inline=False)
+        embed.set_footer(
+            text="黑色麻中",
+            icon_url=
+            "https://cdn.discordapp.com/avatars/1146008422144290826/13051e7a68067c42c417f3aa04de2ffa.webp"
+        )
         await message.reply(embed=embed)
     except Exception as e:
       print(e)
@@ -383,6 +391,7 @@ async def search(ctx, 公告標題):
         image_links.append(img_tag['src'])
 
     embed = discord.Embed(title="爬蟲結果",
+                          url=url,
                           description=f'新聞ID: {news_id}',
                           colour=0x00b0f4,
                           timestamp=datetime.now())
@@ -549,6 +558,7 @@ async def search(ctx, 公告id):
         image_links.append(img_tag['src'])
 
     embed = discord.Embed(title="爬蟲結果",
+                          url=url,
                           description=f'新聞ID: {公告id}',
                           colour=0x00b0f4,
                           timestamp=datetime.now())
@@ -718,6 +728,7 @@ async def start_timer():
               image_links.append(img_tag['src'])
 
           embed = discord.Embed(title="爬蟲結果",
+                                url=url,
                                 description=f'新聞ID: {key}',
                                 colour=0x00b0f4,
                                 timestamp=datetime.now())
