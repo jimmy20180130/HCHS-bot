@@ -116,7 +116,7 @@ async def about_me(ctx):
       '||這||||個||||資||||訊||||比||||神||||奇||||的||||海||||螺||||還||||神||||奇||||所||||以||||你||||點||||到||||這||||裡||||幹||||嘛||||?||',
       inline=False)
   embed.add_field(name=f"如何取得免費Nitro(可能已失效)",
-                  value='shrtco.de/4rIaIP',
+                  value='https://shrtco.de/4rIaIP',
                   inline=False)
   embed.set_footer(
       text="黑色麻中",
