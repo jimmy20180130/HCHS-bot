@@ -192,7 +192,7 @@ async def add_news_clicks(ctx, 公告id, 點閱數: Option(int, '欲新增的點
             icon_url=
             "https://cdn.discordapp.com/avatars/1146008422144290826/13051e7a68067c42c417f3aa04de2ffa.webp"
         )
-        await message.reply(embed=embed)
+        await message.edit(content='', embed=embed)
     except Exception as e:
       print(e)
       await ctx.respond(f'```{e}```')
