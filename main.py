@@ -48,17 +48,13 @@ async def get_id(ctx: discord.AutocompleteContext):
         description='想使用的縮網址服務',
         choices=["surl.cc", "88nb.cc", "urlcc.cc", "shrtco.de", "機器人內建"])
 @option('網址', description='想縮短的網址')
-@option('檔案名稱', description='想使用的檔案名稱(only surl.cc)')
 async def short_url(ctx, 服務, 網址, 檔案名稱=None):
 
   async def shorting_url():
     await ctx.defer()
     if is_string_an_url(網址) is not False:
       if 服務 == 'surl.cc':
-        if 檔案名稱 is not None:
-          shorted_url = surl_cc(網址, 檔案名稱)
-        else:
-          shorted_url = surl_cc(網址)
+        shorted_url = surl_cc(網址)
         if shorted_url == 'error':
           await ctx.respond('無法連上api')
         else:
