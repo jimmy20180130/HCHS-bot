@@ -48,7 +48,7 @@ async def get_id(ctx: discord.AutocompleteContext):
         description='想使用的縮網址服務',
         choices=["surl.cc", "88nb.cc", "urlcc.cc", "shrtco.de", "機器人內建"])
 @option('網址', description='想縮短的網址')
-async def short_url(ctx, 服務, 網址, 檔案名稱=None):
+async def short_url(ctx, 服務, 網址):
 
   async def shorting_url():
     await ctx.defer()
