@@ -125,6 +125,8 @@ def error():
   flag = request.args.get('flag')
   if flag == 'no_args':
     return '找不到參數\n我不是不知道有404這個東西，而是為了配合uptimerobot的機制\n不然這隻機器人會永遠下線'
+  elif flag == 'unknown':
+    return redirect('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
   else:
     return 'error'
 
