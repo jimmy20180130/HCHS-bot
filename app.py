@@ -12,7 +12,7 @@ import time
 from func import unquote_unicode, is_string_an_url
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='')
 SHORT_URL_KEY = 'key' # os.environ['key']
 
 # 用於存儲短網址的字典
