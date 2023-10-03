@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bot dashboard</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+    crossorigin="anonymous"
+  />
+  <style>
+    @import url("https://fonts.googleapis.com/css?family=Lato:300:400");
+
+    body {
+      margin: 0;
+      font-family: "Lato", sans-serif;
+      font-weight: 300;
+      letter-spacing: 2px;
+      font-size: 48px;
+      color: white;
+    }
+
+    .waves {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 15vh;
+      margin-bottom: 0px;
+      /*Fix for safari gap*/
+      min-height: 100px;
+      max-height: 150px;
+    }
+
+    /* Animation */
+
+    .parallax > use {
+      animation: move-forever 25s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
+    }
+
+    .parallax > use:nth-child(1) {
+      animation-delay: -2s;
+      animation-duration: 7s;
+    }
+
+    .parallax > use:nth-child(2) {
+      animation-delay: -3s;
+      animation-duration: 10s;
+    }
+
+    .parallax > use:nth-child(3) {
+      animation-delay: -4s;
+      animation-duration: 13s;
+    }
+
+    .parallax > use:nth-child(4) {
+      animation-delay: -5s;
+      animation-duration: 20s;
+    }
+
+    @keyframes move-forever {
+      0% {
+        transform: translate3d(-90px, 0, 0);
+      }
+
+      100% {
+        transform: translate3d(85px, 0, 0);
+      }
+    }
+
+    /*Shrinking for mobile*/
+    @media (max-width: 768px) {
+      .waves {
+        height: 40px;
+        min-height: 40px;
+      }
+    }
+
+    .outcontainer {
+      min-height: 100vh;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(
+        60deg,
+        rgba(84, 58, 183, 1) 0%,
+        rgba(0, 172, 193, 1) 100%
+      );
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .wrapper-buttons {
+      display: flex;
+      flex-direction: row; /* 變更為水平排列 */
+      align-items: center;
+      justify-content: space-between; /* 平均分佈按鈕 */
+      padding: 0 20px; /* 添加左右間距 */
+    }
+
+    /* 增加按鈕之間的間距 */
+    .wrapper-buttons a + a {
+      margin-left: 50px; /* 設定按鈕之間的間距 */
+    }
+
+    .blue-button,
+    .white-button {
+      width: 100%;
+      display: inline-block;
+      font-family: Whitney, "Open Sans", Helvetica, sans-serif;
+      font-weight: 400;
+      font-size: 20pt;
+      border-radius: 3px;
+      cursor: pointer;
+      height: 90px;
+      box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .blue-button {
+      background-color: #7289da;
+      border: 2px solid #7289da;
+      color: #fff;
+    }
+
+    .white-button {
+      background-color: #fff;
+      border: 2px solid #fff;
+      color: #000;
+    }
+
+    .blue-button:hover,
+    .white-button:hover {
+      transform: translateY(1px);
+    }
+
+    .blue-button:active,
+    .white-button:active {
+      transform: translateY(2px);
+    }
+
+    .blue-button,
+    .white-button {
+      outline: transparent !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="outcontainer">
+    <div class="wrapper-buttons">
+      <a href="http://localhost:8080/login">
+        <button class="blue-button">Login via Discord</button>
+      </a>
+      <a href="http://localhost:8080/discord">
+        <button class="white-button">Join our Discord</button>
+      </a>
+    </div>
+    <svg
+      class="waves"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      viewBox="0 24 150 28"
+      preserveAspectRatio="none"
+      shape-rendering="auto"
+    >
+      <defs>
+        <path
+          id="gentle-wave"
+          d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"
+        />
+      </defs>
+      <g class="parallax">
+        <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7)" />
+        <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
+        <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+        <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
+      </g>
+    </svg>
+  </div>
+</body>
+</html>

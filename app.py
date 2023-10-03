@@ -1,5 +1,5 @@
 import requests
-from flask import Flask, request, make_response, redirect
+from flask import Flask, request, make_response, redirect, render_template
 from urllib.parse import unquote
 import mimetypes
 import urllib.parse
@@ -113,18 +113,22 @@ def index():
       response.headers[key] = value
 
     return response
-
+  elif news_unique_id is None and resource_folder is None and news_id is None and file_name == None:
+    return render_template('index.html')
   elif news_unique_id == None or resource_folder == None or news_id == None or file_name == None:
     return redirect('/error?flag=no_args')
   else:
     return redirect('/error')
-
+  
+@app.route('/discord')
+def discord():
+  return redirect('https://discord.gg/5UrGWXf3ba')
 
 @app.route('/error')
 def error():
   flag = request.args.get('flag')
   if flag == 'no_args':
-    return '找不到參數\n我不是不知道有404這個東西，而是為了配合uptimerobot的機制\n不然這隻機器人會永遠下線'
+    return '參數錯誤!!!'
   elif flag == 'unknown':
     return redirect('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
   else:
