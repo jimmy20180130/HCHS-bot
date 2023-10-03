@@ -13,7 +13,8 @@ from func import unquote_unicode, is_string_an_url
 import os
 
 app = Flask(__name__, template_folder='')
-SHORT_URL_KEY = 'key' # os.environ['key']
+SHORT_URL_KEY = os.environ['key']
+URL_ROOT = 'https://unacceptableconventionalfiles.jimmy20180130.repl.co/'
 
 # 用於存儲短網址的字典
 try:
@@ -226,7 +227,7 @@ def create_short_url():
   if not validate_key(key):
     return "Invalid key", 401
   elif existing_short_key:
-    return f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/{existing_short_key}'
+    return f'{URL_ROOT}{existing_short_key}'
   elif is_string_an_url(decoded_url) == False:
     return "Invalid URL", 404
 
@@ -240,7 +241,7 @@ def create_short_url():
   with open('short_urls.json', 'w') as file:
     json.dump(short_urls, file, indent=4)
 
-  return f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/{short_key}'
+  return f'{URL_ROOT}{short_key}'
 
 
 @app.route('/<key>', methods=['GET'])

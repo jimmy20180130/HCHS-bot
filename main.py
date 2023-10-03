@@ -19,6 +19,7 @@ intents = discord.Intents().all()
 bot = discord.Bot(intents=intents)
 TOKEN = os.environ['bot_token']
 SHORT_URL_KEY = os.environ['key']
+URL_ROOT = 'https://unacceptableconventionalfiles.jimmy20180130.repl.co/'
 
 
 @bot.event
@@ -320,7 +321,7 @@ async def search(ctx, 公告標題):
       file_name = unquote_unicode(file_data[2])
       if type(file_name) == list:
         file_name = file_name[0]
-      file_link = f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/?id={news_id}&news_unique_id={news_unique_id}&res_folder={resource_folder}&res_name={file_name}'
+      file_link = f'{URL_ROOT}?id={news_id}&news_unique_id={news_unique_id}&res_folder={resource_folder}&res_name={file_name}'
       shorted_url = shorts_url(short_repl_it_url(file_link, SHORT_URL_KEY),
                                file_name, None)
       attachments.append(str(shorted_url))
@@ -410,7 +411,7 @@ async def search(ctx, 公告標題):
     # pic links
     if image_links:
       image_links_formatted = "\n".join([
-          f"`圖片{id}` | {shorts_url(short_repl_it_url(f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/images?id={news_id}&name={image_filename}', SHORT_URL_KEY), image_filename, 'image')}"
+          f"`圖片{id}` | {shorts_url(short_repl_it_url(f'{URL_ROOT}images?id={news_id}&name={image_filename}', SHORT_URL_KEY), image_filename, 'image')}"
           for id, image_filename in enumerate(image_links, start=1)
       ])
       embed.add_field(name="圖片", value=image_links_formatted, inline=False)
@@ -487,7 +488,7 @@ async def search(ctx, 公告id):
       file_name = unquote_unicode(file_data[2])
       if type(file_name) == list:
         file_name = file_name[0]
-      file_link = f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/?id={公告id}&news_unique_id={news_unique_id}&res_folder={resource_folder}&res_name={file_name}'
+      file_link = f'{URL_ROOT}?id={公告id}&news_unique_id={news_unique_id}&res_folder={resource_folder}&res_name={file_name}'
       shorted_url = shorts_url(short_repl_it_url(file_link, SHORT_URL_KEY),
                                file_name, None)
       attachments.append(str(shorted_url))
@@ -577,7 +578,7 @@ async def search(ctx, 公告id):
     # image links
     if image_links:
       image_links_formatted = "\n".join([
-          f"`圖片{id}` | {shorts_url(short_repl_it_url(f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/images?id={公告id}&name={image_filename}', SHORT_URL_KEY), image_filename, 'image')}"
+          f"`圖片{id}` | {shorts_url(short_repl_it_url(f'{URL_ROOT}images?id={公告id}&name={image_filename}', SHORT_URL_KEY), image_filename, 'image')}"
           for id, image_filename in enumerate(image_links, start=1)
       ])
       embed.add_field(name="圖片", value=image_links_formatted, inline=False)
@@ -655,7 +656,7 @@ async def start_timer():
             file_name = unquote_unicode(file_data[2])
             if type(file_name) == list:
               file_name = file_name[0]
-            file_link = f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/?id={key}&news_unique_id={news_unique_id}&res_folder={resource_folder}&res_name={file_name}'
+            file_link = f'{URL_ROOT}?id={key}&news_unique_id={news_unique_id}&res_folder={resource_folder}&res_name={file_name}'
             shorted_url = shorts_url(
                 short_repl_it_url(file_link, SHORT_URL_KEY), file_name, None)
             attachments.append(str(shorted_url))
@@ -751,7 +752,7 @@ async def start_timer():
           # image links
           if image_links:
             image_links_formatted = "\n".join([
-                f"`圖片{id}` | {shorts_url(short_repl_it_url(f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/images?id={key}&name={image_filename}', SHORT_URL_KEY), image_filename, 'image')}"
+                f"`圖片{id}` | {shorts_url(short_repl_it_url(f'{URL_ROOT}images?id={key}&name={image_filename}', SHORT_URL_KEY), image_filename, 'image')}"
                 for id, image_filename in enumerate(image_links, start=1)
             ])
             embed.add_field(name="圖片",

@@ -7,6 +7,7 @@ from func import is_string_an_url
 import tracemalloc
 tracemalloc.start()
 
+URL_ROOT = 'https://unacceptableconventionalfiles.jimmy20180130.repl.co/'
 
 def shrtco_de(url):
   shortener_url = f'https://api.shrtco.de/v2/shorten?url={url}'
@@ -30,7 +31,7 @@ def shorts_url(url, filename, image=None):
 
 
 def short_repl_it_url(url, key):
-  url = f'https://unacceptableconventionalfiles.jimmy20180130.repl.co/shorturl?key={key}&url={url}'
+  url = f'{URL_ROOT}shorturl?key={key}&url={url}'
   response = requests.get(url).text
   return response
 
