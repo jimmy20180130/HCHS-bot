@@ -1,9 +1,6 @@
-# 黑色麻中機器人
-✨一個會抓取新竹高中網頁公告的機器人 (還可以把點閱數弄到99999)✨
-
 # **黑色麻中機器人** ✨
 
-🤖 一個會抓取新竹高中網頁的機器人 (其實還可以使用科技與狠活來新增學校網站的點閱數) 🤖
+✨一個會抓取新竹高中網頁公告的機器人 (還可以把點閱數弄到99999)✨
 
 ## 各種神奇連結
 [![Invite](https://img.shields.io/badge/Invite-Bot-blue)](https://discord.com/api/oauth2/authorize?client_id=1146008422144290826&permissions=40667102838353&scope=bot%20applications.commands)
