@@ -124,6 +124,10 @@ def index():
 def discord():
   return redirect('https://discord.gg/5UrGWXf3ba')
 
+@app.route('/invite')
+def invite():
+  return redirect('https://discord.com/api/oauth2/authorize?client_id=1146008422144290826&permissions=36268918959185&scope=bot%20applications.commands')
+
 @app.route('/error')
 def error():
   flag = request.args.get('flag')
