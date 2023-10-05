@@ -385,7 +385,10 @@ async def search(ctx, 公告標題):
     img_tags = soup.find_all('img')
     for img_tag in img_tags:
       if 'src' in img_tag.attrs:
-        image_links.append(img_tag['src'])
+        if not '?id=' in img_tag['src'] or not '&news_unique_id=' in img_tag['src']:
+          image_links.append(f"{img_tag['src']}+")
+        else:
+          image_links.append(img_tag['src'])
 
     embed = discord.Embed(title="爬蟲結果",
                           url=url,
@@ -411,7 +414,9 @@ async def search(ctx, 公告標題):
     # pic links
     if image_links:
       image_links_formatted = "\n".join([
-          f"`圖片{id}` | {shorts_url(short_repl_it_url(f'{URL_ROOT}images?id={news_id}&name={image_filename}', SHORT_URL_KEY), image_filename, 'image')}"
+          f"`圖片{id}` | {shorts_url(f'{URL_ROOT}images?id={news_id}&name={image_filename}', image_filename, 'image')}"
+          if not image_filename.endswith('+')
+          else f"`圖片{id}` | {shorts_url(image_filename.rstrip('+'), '', 'image')}"
           for id, image_filename in enumerate(image_links, start=1)
       ])
       embed.add_field(name="圖片", value=image_links_formatted, inline=False)
@@ -552,7 +557,10 @@ async def search(ctx, 公告id):
     img_tags = soup.find_all('img')
     for img_tag in img_tags:
       if 'src' in img_tag.attrs:
-        image_links.append(img_tag['src'])
+        if not '?id=' in img_tag['src'] or not '&news_unique_id=' in img_tag['src']:
+          image_links.append(f"{img_tag['src']}+")
+        else:
+          image_links.append(img_tag['src'])
 
     embed = discord.Embed(title="爬蟲結果",
                           url=url,
@@ -578,7 +586,9 @@ async def search(ctx, 公告id):
     # image links
     if image_links:
       image_links_formatted = "\n".join([
-          f"`圖片{id}` | {shorts_url(short_repl_it_url(f'{URL_ROOT}images?id={公告id}&name={image_filename}', SHORT_URL_KEY), image_filename, 'image')}"
+          f"`圖片{id}` | {shorts_url(f'{URL_ROOT}images?id={公告id}&name={image_filename}', image_filename, 'image')}"
+          if not image_filename.endswith('+')
+          else f"`圖片{id}` | {shorts_url(image_filename.rstrip('+'), '', 'image')}"
           for id, image_filename in enumerate(image_links, start=1)
       ])
       embed.add_field(name="圖片", value=image_links_formatted, inline=False)
@@ -722,7 +732,10 @@ async def start_timer():
           img_tags = soup.find_all('img')
           for img_tag in img_tags:
             if 'src' in img_tag.attrs:
-              image_links.append(img_tag['src'])
+              if not '?id=' in img_tag['src'] or not '&news_unique_id=' in img_tag['src']:
+                image_links.append(f"{img_tag['src']}+")
+              else:
+                image_links.append(img_tag['src'])
 
           embed = discord.Embed(title="爬蟲結果",
                                 url=url,
@@ -752,12 +765,12 @@ async def start_timer():
           # image links
           if image_links:
             image_links_formatted = "\n".join([
-                f"`圖片{id}` | {shorts_url(short_repl_it_url(f'{URL_ROOT}images?id={key}&name={image_filename}', SHORT_URL_KEY), image_filename, 'image')}"
+                f"`圖片{id}` | {shorts_url(f'{URL_ROOT}images?id={key}&name={image_filename}', image_filename, 'image')}"
+                if not image_filename.endswith('+')
+                else f"`圖片{id}` | {shorts_url(image_filename.rstrip('+'), '', 'image')}"
                 for id, image_filename in enumerate(image_links, start=1)
             ])
-            embed.add_field(name="圖片",
-                            value=image_links_formatted,
-                            inline=False)
+            embed.add_field(name="圖片", value=image_links_formatted, inline=False)
           else:
             embed.add_field(name="圖片", value="無", inline=False)
 
