@@ -385,7 +385,7 @@ async def search(ctx, 公告標題):
     img_tags = soup.find_all('img')
     for img_tag in img_tags:
       if 'src' in img_tag.attrs:
-        if not '?id=' in img_tag['src'] or not '&news_unique_id=' in img_tag['src']:
+        if not '/ischool/resources/WID' in img_tag['src']:
           image_links.append(f"{img_tag['src']}+")
         else:
           image_links.append(img_tag['src'])
@@ -557,7 +557,7 @@ async def search(ctx, 公告id):
     img_tags = soup.find_all('img')
     for img_tag in img_tags:
       if 'src' in img_tag.attrs:
-        if not '?id=' in img_tag['src'] or not '&news_unique_id=' in img_tag['src']:
+        if not '/ischool/resources/WID' in img_tag['src']:
           image_links.append(f"{img_tag['src']}+")
         else:
           image_links.append(img_tag['src'])
@@ -732,7 +732,7 @@ async def start_timer():
           img_tags = soup.find_all('img')
           for img_tag in img_tags:
             if 'src' in img_tag.attrs:
-              if not '?id=' in img_tag['src'] or not '&news_unique_id=' in img_tag['src']:
+              if not '/ischool/resources/WID' in img_tag['src']:
                 image_links.append(f"{img_tag['src']}+")
               else:
                 image_links.append(img_tag['src'])
