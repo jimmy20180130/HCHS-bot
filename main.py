@@ -17,9 +17,9 @@ from url_shortener import shrtco_de, shorts_url, short_88nb_cc, surl_cc, urlcc_c
 tracemalloc.start()
 intents = discord.Intents().all()
 bot = discord.Bot(intents=intents)
-TOKEN = os.environ['bot_token']
-SHORT_URL_KEY = os.environ['key']
-URL_ROOT = 'https://unacceptableconventionalfiles.jimmy20180130.repl.co/'
+TOKEN = 'token'
+SHORT_URL_KEY = 'key'
+URL_ROOT = 'root_url'
 
 
 @bot.event

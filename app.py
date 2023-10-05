@@ -13,8 +13,9 @@ from func import unquote_unicode, is_string_an_url
 import os
 
 app = Flask(__name__, template_folder='')
-SHORT_URL_KEY = os.environ['key']
-URL_ROOT = 'https://unacceptableconventionalfiles.jimmy20180130.repl.co/'
+SHORT_URL_KEY = 'key'
+URL_ROOT = 'root_url'
+
 
 # 用於存儲短網址的字典
 try:
@@ -120,14 +121,19 @@ def index():
     return redirect('/error?flag=no_args')
   else:
     return redirect('/error')
-  
+
+
 @app.route('/discord')
 def discord():
   return redirect('https://discord.gg/5UrGWXf3ba')
 
+
 @app.route('/invite')
 def invite():
-  return redirect('https://discord.com/api/oauth2/authorize?client_id=1146008422144290826&permissions=36268918959185&scope=bot%20applications.commands')
+  return redirect(
+      'https://discord.com/api/oauth2/authorize?client_id=1146008422144290826&permissions=36268918959185&scope=bot%20applications.commands'
+  )
+
 
 @app.route('/error')
 def error():
@@ -162,9 +168,9 @@ def show_image():
   img_tags = soup.find_all('img')
   for image_tag in img_tags:
     src = image_tag.get('src')
-    if src.endswith(image_filename):
-      img_src = src
+    img_src = src
 
+        
   # 設定第二次請求的URL和Headers
   url_second = img_src
   headers_second = {
@@ -253,7 +259,7 @@ def redirect_to_original_url(key):
 
 
 def run():
-  app.run(host="0.0.0.0", port=8080, debug=False)
+  app.run(host="0.0.0.0", port=26020, debug=False)
 
 
 def send_request():
