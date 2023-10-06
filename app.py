@@ -266,21 +266,6 @@ def run():
   app.run(host="0.0.0.0", port=26020, debug=False)
 
 
-def send_request():
-  while True:
-    # 发送GET请求到指定的URL
-    url = "https://alivesrfewsdfcdrwerfdwe.jimmy20180130.repl.co"
-    response = requests.get(url)
-
-    # 打印响应内容和状态码
-    print(f"網站 {url} : {response.status_code}")
-
-    # 等待60秒再次发送请求
-    time.sleep(60)
-
-
 def keep_alive():
   server = Thread(target=run)
-  request_thread = Thread(target=send_request)  # Rename the variable here
   server.start()
-  request_thread.start()
