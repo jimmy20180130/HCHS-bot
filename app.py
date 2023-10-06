@@ -13,8 +13,12 @@ from func import unquote_unicode, is_string_an_url
 import os
 
 app = Flask(__name__, template_folder='')
-SHORT_URL_KEY = 'key'
-URL_ROOT = 'root_url'
+
+with open('settings.json', 'r', encoding='utf-8') as settings_file:
+  setting = json.load(settings_file)
+
+SHORT_URL_KEY = setting['key']
+URL_ROOT = setting['url_root']
 
 
 # 用於存儲短網址的字典

@@ -1,5 +1,8 @@
 {
     "channel_id": [
-        ""
-    ]
+
+    ],
+    "token": "",
+    "key": "",
+    "url_root": ""
 }

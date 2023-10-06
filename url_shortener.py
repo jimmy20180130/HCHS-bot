@@ -5,9 +5,13 @@ import hashlib
 import xml.etree.ElementTree as ET
 from func import is_string_an_url
 import tracemalloc
+import json
 tracemalloc.start()
 
-URL_ROOT = 'root_url'
+with open('settings.json', 'r', encoding='utf-8') as settings_file:
+  setting = json.load(settings_file)
+
+URL_ROOT = setting['url_root']
 
 def shrtco_de(url):
   shortener_url = f'https://api.shrtco.de/v2/shorten?url={url}'
