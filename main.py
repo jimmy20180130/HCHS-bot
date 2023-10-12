@@ -278,7 +278,7 @@ async def remove_channel(ctx, 公告頻道: Option(discord.TextChannel,
     await ctx.respond(embed=embed)
 
 
-@bot.command(name='尋找公告', description="取得指定公告標題的資訊")
+@bot.command(name='用標題尋找公告', description="取得指定公告標題的資訊")
 @option('公告標題',
         description='你要查詢的標題',
         autocomplete=discord.utils.basic_autocomplete(get_id))
