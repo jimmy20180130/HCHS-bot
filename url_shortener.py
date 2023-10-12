@@ -6,12 +6,15 @@ import xml.etree.ElementTree as ET
 from func import is_string_an_url
 import tracemalloc
 import json
+
 tracemalloc.start()
 
 with open('settings.json', 'r', encoding='utf-8') as settings_file:
   setting = json.load(settings_file)
 
 URL_ROOT = setting['url_root']
+SHORT_URL_KEY = setting['key']
+
 
 def shrtco_de(url):
   shortener_url = f'https://api.shrtco.de/v2/shorten?url={url}'
@@ -23,6 +26,9 @@ def shrtco_de(url):
 
 
 def short_repl_it_url(url, key):
+  url = is_string_an_url(url)
+  if url is None or url == '':
+    return 'error'
   url = f'{URL_ROOT}shorturl?key={key}&url={url}'
   response = requests.get(url).text
   return response
@@ -34,7 +40,7 @@ def shorts_url(url, filename, image=None):
     shrtco_de_url = f'`{filename}` | {url}'
   elif image == 'image':
     # shrtco_de_url = shrtco_de(url)
-    shrtco_de_url = short_repl_it_url(url, '')
+    shrtco_de_url = short_repl_it_url(url, SHORT_URL_KEY)
   if not shrtco_de_url.endswith('error'):
     return shrtco_de_url
   else:
@@ -43,6 +49,9 @@ def shorts_url(url, filename, image=None):
 
 
 def surl_cc(url, filename=None):
+  url = is_string_an_url(url)
+  if url is None or url == '':
+    return 'error'
   ssur_cc_key_list = [
       'nZ9ZzSa4LZ4o', 'Ed8nLSFpNVGB', 'YJimrVqxmExf', 'L9YRXGPugtet',
       'HR7RDeKNVgTX', 'RKqh9qcjDoe4', 'XoWtP22exnmy', 'GGFedvn7yhFZ',
@@ -64,34 +73,40 @@ def surl_cc(url, filename=None):
 
 
 def short_88nb_cc(url):
-    short_88nb_cc_key_list = [
-        'ea8d7b3ded', 'b89377c881', 'b6fc6a3133', '44ccb4f4b2', '120ef9330f'
-    ]
-    short_88nb_cc_key = random.choice(short_88nb_cc_key_list)
-    # timestamp
-    timestamp = str(int(time.time()))
-    api_url = 'https://88nb.cc/88nb-api.php'
-    # signature
-    signature = hashlib.md5((timestamp + short_88nb_cc_key).encode()).hexdigest()
-    # data
-    data = {
-        'url': url,
-        'action': 'shorturl',
-        'timestamp': timestamp,
-        'signature': signature
-    }
-    # POST request
-    short_88nb_cc_shorted_url_response = requests.post(api_url, data=data).text
-    root = ET.fromstring(short_88nb_cc_shorted_url_response)
-    try:
-      short_88nb_cc_shorted_url = root.find("./shorturl").text
-      return short_88nb_cc_shorted_url
-    except Exception as e:
-      print(f'連接到88nb.cc的api時發生了一個錯誤\n{e}')
-      return 'error'
+  url = is_string_an_url(url)
+  if url is None or url == '':
+    return 'error'
+  short_88nb_cc_key_list = [
+      'ea8d7b3ded', 'b89377c881', 'b6fc6a3133', '44ccb4f4b2', '120ef9330f'
+  ]
+  short_88nb_cc_key = random.choice(short_88nb_cc_key_list)
+  # timestamp
+  timestamp = str(int(time.time()))
+  api_url = 'https://88nb.cc/88nb-api.php'
+  # signature
+  signature = hashlib.md5((timestamp + short_88nb_cc_key).encode()).hexdigest()
+  # data
+  data = {
+      'url': url,
+      'action': 'shorturl',
+      'timestamp': timestamp,
+      'signature': signature
+  }
+  # POST request
+  short_88nb_cc_shorted_url_response = requests.post(api_url, data=data).text
+  root = ET.fromstring(short_88nb_cc_shorted_url_response)
+  try:
+    short_88nb_cc_shorted_url = root.find("./shorturl").text
+    return short_88nb_cc_shorted_url
+  except Exception as e:
+    print(f'連接到88nb.cc的api時發生了一個錯誤\n{e}')
+    return 'error'
 
 
 def urlcc_cc(url):
+  url = is_string_an_url(url)
+  if url is None or url == '':
+    return 'error'
   urlcc_cc_key_list = ['86bcb4ac40', 'a5b036890f']
   urlcc_cc_key = random.choice(urlcc_cc_key_list)
   urlcc_cc_shortener_url = f'https://urlcc.cc/api.php?appkey={urlcc_cc_key}&longurl={url}'
