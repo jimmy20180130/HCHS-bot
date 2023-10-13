@@ -135,7 +135,7 @@ async def about_me(ctx):
 # 添加命令冷卻，限制該指令的觸發頻率
 @commands.cooldown(1, 10, commands.BucketType.user)
 @commands.max_concurrency(3, per=commands.BucketType.default, wait=False)
-@anc.command(name="新增公告點閱數", description="這是一個神奇的功能")
+@anc.command(name="新增點閱數", description="這是一個神奇的功能")
 @option('公告id',
         description='你要新增點閱數的公告',
         autocomplete=discord.utils.basic_autocomplete(get_id))
