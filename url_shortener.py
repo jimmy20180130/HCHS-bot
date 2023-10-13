@@ -26,26 +26,12 @@ def shrtco_de(url):
 
 
 def short_repl_it_url(url, key):
-  url = is_string_an_url(url)
-  if url is None or url == '':
+  urla = is_string_an_url(url)
+  if urla is None or urla == '':
     return 'error'
   url = f'{URL_ROOT}shorturl?key={key}&url={url}'
   response = requests.get(url).text
   return response
-
-
-def shorts_url(url, filename, image=None):
-  if image is None:
-    # shrtco_de_url = f'`{filename}` | {shrtco_de(url)}'
-    shrtco_de_url = f'`{filename}` | {url}'
-  elif image == 'image':
-    # shrtco_de_url = shrtco_de(url)
-    shrtco_de_url = short_repl_it_url(url, SHORT_URL_KEY)
-  if not shrtco_de_url.endswith('error'):
-    return shrtco_de_url
-  else:
-    print('無法連上api')
-    return f'`{filename}` | [連結點我]({url})'
 
 
 def surl_cc(url, filename=None):

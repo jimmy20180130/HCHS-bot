@@ -8,9 +8,7 @@ from threading import Thread
 from bs4 import BeautifulSoup
 import json
 import random
-import time
 from func import unquote_unicode, is_string_an_url
-import os
 
 app = Flask(__name__, template_folder='')
 
