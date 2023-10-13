@@ -1,6 +1,4 @@
 import requests
-from bs4 import BeautifulSoup
-import re
 import json
 import app
 from discord.ext import commands
@@ -9,8 +7,6 @@ from discord import Option, option
 from discord.commands import SlashCommandGroup
 from datetime import datetime
 import asyncio
-import time
-import os
 import tracemalloc
 from func import is_string_an_url, update_news_count, detect_and_resolve_duplicates, get_anc
 from url_shortener import shrtco_de, short_88nb_cc, surl_cc, urlcc_cc, short_repl_it_url
