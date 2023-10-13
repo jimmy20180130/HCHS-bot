@@ -110,7 +110,7 @@ async def short_url_error(ctx, error):
     await ctx.respond("目前因多人同時使用此功能，請稍後再試")
 
 
-@bot.command(name="關於機器人", description="黑色麻中")
+@bot.command(name="關於機器人", description="黑色麻中ㄐㄐ人")
 async def about_me(ctx):
   embed = discord.Embed(title="關於我", colour=0x00b0f4, timestamp=datetime.now())
   embed.add_field(name=f"我的名字", value='黑色麻中ㄐㄐ人', inline=False)
