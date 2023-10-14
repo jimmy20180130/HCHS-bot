@@ -46,7 +46,7 @@ def surl_cc(url, filename=None):
   ]
   ssur_cc_key = random.choice(ssur_cc_key_list)
   if filename is not None:
-    ssur_cc_shortener_url_custom = f'https://ssur.cc/api.php?appkey={ssur_cc_key}&format={filename}&longurl={url}'
+    ssur_cc_shortener_url_custom = f'https://ssur.cc/api.php?appkey={ssur_cc_key}&format=text&longurl={url}'
   else:
     ssur_cc_shortener_url_custom = f'https://ssur.cc/api.php?appkey={ssur_cc_key}&longurl={url}'
   ssur_cc_shorted_url_custom = requests.get(ssur_cc_shortener_url_custom).text
@@ -59,8 +59,8 @@ def surl_cc(url, filename=None):
 
 
 def short_88nb_cc(url):
-  url = is_string_an_url(url)
-  if url is None or url == '':
+  urla = is_string_an_url(url)
+  if urla is None or urla == '':
     return 'error'
   short_88nb_cc_key_list = [
       'ea8d7b3ded', 'b89377c881', 'b6fc6a3133', '44ccb4f4b2', '120ef9330f'
@@ -90,8 +90,8 @@ def short_88nb_cc(url):
 
 
 def urlcc_cc(url):
-  url = is_string_an_url(url)
-  if url is None or url == '':
+  urla = is_string_an_url(url)
+  if urla is None or urla == '':
     return 'error'
   urlcc_cc_key_list = ['86bcb4ac40', 'a5b036890f']
   urlcc_cc_key = random.choice(urlcc_cc_key_list)
