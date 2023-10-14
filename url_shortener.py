@@ -16,13 +16,13 @@ URL_ROOT = setting['url_root']
 SHORT_URL_KEY = setting['key']
 
 
-def shrtco_de(url):
-  shortener_url = f'https://api.shrtco.de/v2/shorten?url={url}'
-  shorted_url = requests.get(shortener_url)
-  if shorted_url.status_code == 201:
-    return shorted_url.json()['result']['full_short_link']
-  else:
-    return 'error'
+# def shrtco_de(url):
+#   shortener_url = f'https://api.shrtco.de/v2/shorten?url={url}'
+#   shorted_url = requests.get(shortener_url)
+#   if shorted_url.status_code == 201:
+#     return shorted_url.json()['result']['full_short_link']
+#   else:
+#     return 'error'
 
 
 def short_repl_it_url(url, key):
@@ -35,8 +35,8 @@ def short_repl_it_url(url, key):
 
 
 def surl_cc(url, filename=None):
-  url = is_string_an_url(url)
-  if url is None or url == '':
+  urla = is_string_an_url(url)
+  if urla is None or urla == '':
     return 'error'
   ssur_cc_key_list = [
       'nZ9ZzSa4LZ4o', 'Ed8nLSFpNVGB', 'YJimrVqxmExf', 'L9YRXGPugtet',

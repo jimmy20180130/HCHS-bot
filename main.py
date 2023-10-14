@@ -81,13 +81,6 @@ async def short_url(ctx, 服務, 網址):
         else:
           await ctx.respond(shorted_url)
 
-      elif 服務 == 'shrtco.de':
-        shorted_url = shrtco_de(網址)
-        if shorted_url == 'error':
-          await ctx.respond('無法連上api')
-        else:
-          await ctx.respond(shorted_url)
-
       elif 服務 == '機器人內建':
         shorted_url = short_repl_it_url(網址, SHORT_URL_KEY)
         if shorted_url == 'Invalid key' or shorted_url == 'Invalid URL':
@@ -122,7 +115,7 @@ async def about_me(ctx):
       '||這||||個||||資||||訊||||比||||神||||奇||||的||||海||||螺||||還||||神||||奇||||所||||以||||你||||點||||到||||這||||裡||||幹||||嘛||||?||',
       inline=False)
   embed.add_field(name=f"如何取得免費Nitro(可能已失效)",
-                  value='https://shrtco.de/4rIaIP',
+                  value='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
                   inline=False)
   embed.set_footer(
       text="黑色麻中",
