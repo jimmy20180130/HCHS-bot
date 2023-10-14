@@ -287,7 +287,9 @@ async def search_title(ctx, 公告標題):
   await ctx.defer()
   message = await ctx.respond('資料處理中，請稍後')
   response = await get_anc(公告標題)
-  if response.startswith('error'):
+  if type(response) == discord.embeds.Embed:
+    await message.edit(content="", embed=response)
+  elif response.startswith('error'):
     embed = discord.Embed(title="發生了錯誤",
                           description=f'```{response[5:]}```',
                           colour=0x00b0f4,
@@ -298,8 +300,6 @@ async def search_title(ctx, 公告標題):
         "https://cdn.discordapp.com/avatars/1146008422144290826/13051e7a68067c42c417f3aa04de2ffa.webp"
     )
     await message.edit(content="", embed=embed)
-  else:
-    await message.edit(content="", embed=response)
 
 
 async def get_id2(ctx: discord.AutocompleteContext):
@@ -323,7 +323,9 @@ async def search(ctx, 公告id):
   await ctx.defer()
   message = await ctx.respond('資料處理中，請稍後')
   response = await get_anc(公告id)
-  if response.startswith('error'):
+  if type(response) == discord.embeds.Embed:
+    await message.edit(content="", embed=response)
+  elif response.startswith('error'):
     embed = discord.Embed(title="發生了錯誤",
                           description=f'```{response[5:]}```',
                           colour=0x00b0f4,
@@ -334,8 +336,6 @@ async def search(ctx, 公告id):
         "https://cdn.discordapp.com/avatars/1146008422144290826/13051e7a68067c42c417f3aa04de2ffa.webp"
     )
     await message.edit(content="", embed=embed)
-  else:
-    await message.edit(content="", embed=response)
 
 
 async def start_timer():
@@ -358,7 +358,8 @@ async def start_timer():
     for key, value in news.items():
       if value == 'None' and int(key) > int(last_non_none_item) and int(
           key) < int(last_non_none_item) + 10:
-        response = await get_anc(key)
+        
+        response = await get_anc(key, 'auto')
         if response != 'error公告ID錯誤: 找不到該ID' and type(response) != discord.embeds.Embed:
           print(0)
           print(response)
@@ -391,9 +392,6 @@ async def start_timer():
               print(2)
               print(e)
               continue
-
-    with open('news.json', 'w', encoding='utf-8') as news_file:
-      json.dump(news, news_file, ensure_ascii=False, indent=4)
 
     detect_and_resolve_duplicates()
 

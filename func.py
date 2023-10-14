@@ -17,11 +17,11 @@ URL_ROOT = setting['url_root']
 unichr = chr
 
 def short_repl_it_url(url, key):
-  url = is_string_an_url(url)
-  if url is None or url == '':
+  urla = is_string_an_url(url)
+  if urla is None or urla == '':
     return 'error'
-  url = f'{URL_ROOT}shorturl?key={key}&url={url}'
-  response = requests.get(url).text
+  urla = f'{URL_ROOT}shorturl?key={key}&url={url}'
+  response = requests.get(urla).text
   return response
 
 def shorts_url(url, filename, image=None):
@@ -75,7 +75,10 @@ def is_string_an_url(url_string: str) -> bool:
       r'(?:/?|[/?]\S+)$',
       re.IGNORECASE)
   link = re.match(regex, url_string)
-  return link
+  if link is None:
+    return None
+  else:
+    return link
 
 
 async def update_news_count(a):
@@ -126,17 +129,18 @@ def detect_and_resolve_duplicates():
 
   return
 
-async def get_anc(news_id):
+async def get_anc(news_id, auto=None):
   try:
     with open('news.json', 'r', encoding='utf-8') as news_file:
-        news = json.load(news_file)
+      news = json.load(news_file)
 
-    # find all value
-    for key, value in news.items():
-      if len(value) == 100 and value.startswith(news_id):
-        news_id = key
-      elif len(value) < 100 and value == news_id:
-        news_id = key
+    if auto is None:
+      # find all value
+      for key, value in news.items():
+        if len(value) == 100 and value.startswith(news_id):
+          news_id = key
+        elif len(value) < 100 and value == news_id:
+          news_id = key
 
     url = f"https://www.hchs.hc.edu.tw/ischool/public/news_view/show.php?nid={news_id}"
 
@@ -176,6 +180,8 @@ async def get_anc(news_id):
     # get title
     title_element = soup.find('h4')
     title = title_element.text.strip()
+    if auto is not None:
+      news[str(news_id)] = title
 
     # get info
     info_unit = soup.find(id='info_unit').text.strip()
@@ -235,6 +241,10 @@ async def get_anc(news_id):
           image_links.append(f"{img_tag['src']}+")
         else:
           image_links.append(img_tag['src'])
+          
+    if auto is not None:
+      with open('news.json', 'w', encoding='utf-8') as news_file:
+        json.dump(news, news_file, ensure_ascii=False, indent=4)
 
     embed = discord.Embed(title="爬蟲結果",
                           url=url,
