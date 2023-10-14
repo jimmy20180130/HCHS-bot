@@ -345,11 +345,11 @@ async def start_timer():
     with open('settings.json', 'r', encoding='utf-8') as settings:
       setting = json.load(settings)
 
-    # 将字符串键转换为整数，然后按照整数进行排序
+    # 小到大排key
     sorted_data = {int(key): value for key, value in news.items()}
     sorted_data = dict(sorted(sorted_data.items()))
 
-    # 查找最后一个不为"None"的项
+    # 最後一個不為None的項目
     last_non_none_item = None
     for key, value in sorted_data.items():
       if value != "None":
