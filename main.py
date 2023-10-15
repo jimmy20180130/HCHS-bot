@@ -9,7 +9,7 @@ from datetime import datetime
 import asyncio
 import tracemalloc
 from func import is_string_an_url, update_news_count, detect_and_resolve_duplicates, get_anc
-from url_shortener import shrtco_de, short_88nb_cc, surl_cc, urlcc_cc, short_repl_it_url
+from url_shortener import short_88nb_cc, surl_cc, urlcc_cc, short_repl_it_url
 
 tracemalloc.start()
 intents = discord.Intents().all()

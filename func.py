@@ -1,5 +1,5 @@
 import requests
-from urllib.parse import unquote
+from urllib.parse import unquote, quote
 import re
 import json
 import requests
@@ -129,6 +129,10 @@ def detect_and_resolve_duplicates():
 
   return
 
+async def encode_spaces_in_url(url):
+    encoded_url = quote(url, safe=':/')
+    return encoded_url
+
 async def get_anc(news_id, auto=None):
   try:
     with open('news.json', 'r', encoding='utf-8') as news_file:
@@ -171,7 +175,7 @@ async def get_anc(news_id, auto=None):
       file_name = unquote_unicode(file_data[2])
       if type(file_name) == list:
         file_name = file_name[0]
-      file_link = f'{URL_ROOT}?id={news_id}&news_unique_id={news_unique_id}&res_folder={resource_folder}&res_name={file_name}'
+      file_link = await encode_spaces_in_url(f'{URL_ROOT}?id={news_id}&news_unique_id={news_unique_id}&res_folder={resource_folder}&res_name={file_name}')
       shorted_url = shorts_url(short_repl_it_url(file_link, SHORT_URL_KEY),
                                 file_name, None)
       attachments.append(str(shorted_url))

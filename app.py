@@ -117,9 +117,9 @@ def index():
       response.headers[key] = value
 
     return response
-  elif news_unique_id is None and resource_folder is None and news_id is None and file_name == None:
+  elif news_unique_id is None and resource_folder is None and news_id is None and file_name is None:
     return render_template('index.html')
-  elif news_unique_id == None or resource_folder == None or news_id == None or file_name == None:
+  elif news_unique_id is None or resource_folder is None or news_id is None or file_name is None:
     return redirect('/error?flag=no_args')
   else:
     return redirect('/error')
@@ -261,7 +261,7 @@ def redirect_to_original_url(key):
 
 
 def run():
-  app.run(host="0.0.0.0", port=8080, debug=False)
+  app.run(host="0.0.0.0", port=26020, debug=False)
 
 
 def keep_alive():
