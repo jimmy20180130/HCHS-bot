@@ -34,12 +34,11 @@
 
 ## 需求
 - Python 3.11 或更高之版本
-- py-cord 2.4.1
-- requests 2.31.0
-- python-dotenv 1.0.0
-- flask 2.3.2
-- beautifulsoup4 4.12.2
-- validators 0.22.0
+- py-cord==2.4.1
+- requests==2.31.0
+- flask==2.3.2
+- beautifulsoup4==4.12.2
+- validators==0.22.0
 - lxml
 
 ## 操作方式(在自己電腦上跑)
