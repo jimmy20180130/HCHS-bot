@@ -105,14 +105,14 @@ async def short_url_error(ctx, error):
 
 @bot.command(name="關於機器人", description="黑色麻中ㄐㄐ人")
 async def about_me(ctx):
+  values='這個資訊比神奇的海螺還神奇所以你點到這裡幹嘛?'
   embed = discord.Embed(title="關於我", colour=0x00b0f4, timestamp=datetime.now())
   embed.add_field(name=f"我的名字", value='黑色麻中ㄐㄐ人', inline=False)
   embed.add_field(name=f"我的作者", value='<@971730686685880322>', inline=False)
   embed.add_field(name=f"版本", value='2.0', inline=False)
   embed.add_field(
       name=f"神奇的資訊",
-      value=
-      '||這||||個||||資||||訊||||比||||神||||奇||||的||||海||||螺||||還||||神||||奇||||所||||以||||你||||點||||到||||這||||裡||||幹||||嘛||||?||',
+      value=''.join([f'||{char}||' for char in values]),
       inline=False)
   embed.add_field(name=f"如何取得免費Nitro(可能已失效)",
                   value='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
