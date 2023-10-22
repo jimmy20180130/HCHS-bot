@@ -52,7 +52,7 @@ async def get_id(ctx: discord.AutocompleteContext):
 @commands.max_concurrency(3, per=commands.BucketType.default, wait=False)
 @option('服務',
         description='想使用的縮網址服務',
-        choices=["surl.cc", "88nb.cc", "urlcc.cc", "shrtco.de", "機器人內建"])
+        choices=["surl.cc", "88nb.cc", "urlcc.cc", "機器人內建"])
 @option('網址', description='想縮短的網址')
 async def short_url(ctx, 服務, 網址):
 
