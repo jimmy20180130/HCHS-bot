@@ -1,5 +1,4 @@
 import requests
-import json
 import app
 from discord.ext import commands
 import discord
@@ -12,6 +11,7 @@ from func import is_string_an_url, update_news_count, detect_and_resolve_duplica
 from url_shortener import surl_cc, short_repl_it_url
 from fb_scraper import crawl_fb
 import time
+import threading
 
 tracemalloc.start()
 intents = discord.Intents().all()
@@ -23,12 +23,12 @@ TOKEN = setting['token']
 SHORT_URL_KEY = setting['key']
 URL_ROOT = setting['url_root']
 
-
 @bot.event
 async def on_ready():
   print(f'機器人已上線({bot.user})')
+  t = threading.Thread(target=crawl_fb_post)
+  t.start()
   await start_timer()
-  await crawl_fb()
 
 anc = SlashCommandGroup('公告', '關於公告的指令類別')
 anc_find= anc.create_subgroup('尋找', '用id或標題尋找公告')
@@ -97,7 +97,7 @@ async def get_post_id(ctx: discord.AutocompleteContext):
 
   result_list = []
   # find all value
-  for key in posts.items():
+  for key, value in posts.items():
     result_list.append(key)
 
   return result_list
@@ -119,21 +119,28 @@ async def find_hchs(ctx, 貼文id, show_full_comments: Option(name='顯示完整
       'wow': '哇',
       'sorry': '嗚',
       'angry': '怒',
+      '讚': '讚',
+      '大心': '大心',
+      '哈': '哈',
+      '哇': '哇',
+      '嗚': '嗚',
+      '怒': '怒',
   }
 
   output_text = {}
 
   for key, value in reactions.items():
-      if key in mapping:
-          output_text[mapping[key]] = value
+    if key in mapping:
+      output_text[mapping[key]] = value
 
   def format_comment(comment):
     time = comment["comment_time"]
     commenter_name = comment["commenter_name"]
-    commenter_url = comment["commenter_url"]
+    commenter_url = short_repl_it_url(comment["commenter_url"], SHORT_URL_KEY)
     comment_text = comment["comment_text"]
-    comment_url = comment["comment_url"]
-    comment_image = comment["comment_image"]
+    comment_url = short_repl_it_url(comment["comment_url"], SHORT_URL_KEY)
+    if comment["comment_image"] is not None:
+      comment_image = short_repl_it_url(comment["comment_image"], SHORT_URL_KEY)
     comment_reply = comment['replies']
 
     reactions_mapping = {
@@ -142,13 +149,15 @@ async def find_hchs(ctx, 貼文id, show_full_comments: Option(name='顯示完整
         'haha': '哈',
         'wow': '哇',
         'sorry': '嗚',
+        'sad': '嗚',
         'angry': '怒',
+        'care': '加油'
     }
 
-    image_text = f'  [照片]({comment_image})'
     formatted_comment = f"({time}) [{commenter_name}]({commenter_url}): [{comment_text}]({comment_url})"
 
-    if comment_image is not None:
+    if comment["comment_image"] is not None:
+      image_text = f'  ([圖片]({comment_image}))'
       formatted_comment += image_text
 
     if comment["comment_reactions"]:
@@ -157,21 +166,24 @@ async def find_hchs(ctx, 貼文id, show_full_comments: Option(name='顯示完整
       formatted_comment += f"\n{reaction_text}"
     
     if comment_reply != []:
-      time1 = comment_reply["comment_time"]
-      commenter_name1 = comment_reply["commenter_name"]
-      commenter_url1 = comment_reply["commenter_url"]
-      comment_text1 = comment_reply["comment_text"]
-      comment_url1 = comment_reply["comment_url"]
-      comment_image1 = comment_reply["comment_image"]
-      reply_text = f'\n-> ({time1}) [{commenter_name1}]({commenter_url1}): [{comment_text1}]({comment_url1})'
-      if comment_image is not None:
-        reply_text += image_text
+      for items in comment_reply:
+        time1 = items["comment_time"]
+        commenter_name1 = items["commenter_name"]
+        commenter_url1 = short_repl_it_url(items["commenter_url"], SHORT_URL_KEY)
+        comment_text1 = items["comment_text"]
+        comment_url1 = short_repl_it_url(items["comment_url"], SHORT_URL_KEY)
+        if items["comment_image"] is not None:
+          comment_image1 = short_repl_it_url(items["comment_image"], SHORT_URL_KEY)
+          image_text = f'  ([圖片]({comment_image1}))'
+        reply_text = f'\n╚═ ({time1}) [{commenter_name1}]({commenter_url1}): [{comment_text1}]({comment_url1})'
+        if items["comment_image"] is not None:
+          reply_text += image_text
 
-      if comment_reply["comment_reactions"]:
-        reactions = comment_reply["comment_reactions"]
-        reaction_text = "   ".join([f"{reactions_mapping.get(reaction, reaction)}: {count}" for reaction, count in reactions.items()])
-        reply_text += f"\n{reaction_text}"
-      format_comment += reply_text
+        if items["comment_reactions"]:
+          reactions = items["comment_reactions"]
+          reaction_text = "   ".join([f"{reactions_mapping.get(reaction, reaction)}: {count}" for reaction, count in reactions.items()])
+          reply_text += f"\n{reaction_text}"
+        formatted_comment += reply_text
     return formatted_comment
 
   if post_id in all_posts:
@@ -182,7 +194,7 @@ async def find_hchs(ctx, 貼文id, show_full_comments: Option(name='顯示完整
     )
     embed.add_field(
       name="貼文內容",
-      value=all_posts[post_id]['content'],
+      value=f"```{all_posts[post_id]['content']}```",
       inline=False
     )
     embed.add_field(
@@ -192,13 +204,18 @@ async def find_hchs(ctx, 貼文id, show_full_comments: Option(name='顯示完整
     )
     embed.add_field(
       name="表情",
-      value='\n'.join(n for n in output_text),
+      value='\n'.join(f'{n}: {output_text[n]}' for n in output_text),
       inline=False
     )
-    if show_full_comments is True:
+    def add_quote(text):
+      lines = text.split('\n')
+      modified_lines = ['> ' + line for line in lines]
+      result = '\n'.join(modified_lines)
+      return result
+    if show_full_comments == '是':
       embed.add_field(
-        name="所有留言",
-        value='\n'.join(format_comment(comment) for comment in all_posts[post_id]['commments_full']),
+        name="所有留言(因字數限制，所以只能顯示最多六則)",
+        value=add_quote('\n'.join(format_comment(comment) for comment in all_posts[post_id]['comments_full'][:6])),
         inline=False
       )
     embed.set_footer(
@@ -434,12 +451,10 @@ async def search(ctx, 公告id):
     await message.edit(content="", embed=embed)
 
 
-async def get_fb_post():
-  result = crawl_fb()
-  while result is None:
-    if result is not None:
-      time.sleep(5)
-      crawl_fb()
+def crawl_fb_post():
+  while True:
+    asyncio.run(crawl_fb())
+    time.sleep(3600*6)
 
 
 async def start_timer():
@@ -500,6 +515,7 @@ async def start_timer():
     await asyncio.sleep(3600)
 
 bot.add_application_command(anc)
+bot.add_application_command(black_hchs)
 
 if __name__ == '__main__':
   app.keep_alive()

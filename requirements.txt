@@ -5,3 +5,4 @@ flask==2.3.2
 beautifulsoup4==4.12.2
 validators==0.22.0
 lxml
+facebook-scraper @ git+https://github.com/seabnavin19/facebook-scraper.git

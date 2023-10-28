@@ -1,4 +1,3 @@
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -10,8 +9,9 @@ from lxml import html
 import facebook_scraper as fs
 import re
 from func import load_file, save_file
+import asyncio
 
-def crawl_fb():
+async def crawl_fb():
     settings = load_file('settings.json')
     # ------ 設定要前往的網址 ------
     url = 'https://mbasic.facebook.com'
@@ -34,7 +34,7 @@ def crawl_fb():
     elem.send_keys(password)        
 
     elem.send_keys(Keys.RETURN)
-    time.sleep(5)
+    await asyncio.sleep(5)
 
     #檢查有沒有被擋下來
     if len(driver.find_elements(by=By.XPATH, value="//*[contains(text(), '你的帳號暫時被鎖住')]")) > 0:
@@ -43,7 +43,7 @@ def crawl_fb():
     # 切換頁面
     spec_url = 'https://mbasic.facebook.com/profile.php?id=100090573221915&v=timeline'
     driver.get(spec_url)
-    time.sleep(5)
+    await asyncio.sleep(5)
 
     url_next = ''
     for i in range(3):
@@ -76,7 +76,7 @@ def crawl_fb():
             for item in urla:
                 driver.get(item)
                 item_index = urla.index(item)
-                time.sleep(5)
+                await asyncio.sleep(5)
                 soup = Soup(driver.page_source, "lxml")
                 image = soup.find('div', class_='s')
                 image_tree = html.fromstring(str(image))
@@ -85,7 +85,7 @@ def crawl_fb():
                 elements = image_tree.xpath(xpath_to_find)
                 for element in elements:
                     urla[item_index] = element.get('src')
-                time.sleep(3)
+                await asyncio.sleep(3)
 
         posts = fs.get_posts(
             post_urls=urls3,
@@ -124,19 +124,19 @@ def crawl_fb():
         if i == 0:
             url = 'https://mbasic.facebook.com/profile.php?id=100090573221915&v=timeline'
             driver.get(url)
-            time.sleep(3)
+            await asyncio.sleep(3)
             read_more_xpath = '/html/body/div/div/div[2]/div/div[1]/div[3]/div[2]/div/div[1]/a'
             buttons = html.fromstring(str(driver.page_source)).xpath(read_more_xpath)
             for button in buttons:
                 url_next= button.get('href')
             driver.get('https://mbasic.facebook.com' + url_next)
-            time.sleep(3)
+            await asyncio.sleep(3)
         else:
             driver.get('https://mbasic.facebook.com' + url_next)
-            time.sleep(3)
+            await asyncio.sleep(3)
             read_more_xpath = '/html/body/div/div/div[1]/div/table/tbody/tr/td/div/div[1]/a'
             buttons = html.fromstring(driver.page_source).xpath(read_more_xpath)
             for button in buttons:
                 url_next= button.get('href')
             driver.get('https://mbasic.facebook.com' + url_next)
-            time.sleep(3)
+            await asyncio.sleep(3)
