@@ -4,5 +4,7 @@
     ],
     "token": "",
     "key": "",
-    "url_root": ""
+    "url_root": "",
+    "fb_username": "",
+    "fb_pwd": ""
 }

@@ -8,22 +8,35 @@ from datetime import datetime
 import time
 import discord
 
-with open('settings.json', 'r', encoding='utf-8') as settings_file:
-  setting = json.load(settings_file)
+# ------ 讀取json檔案 ------
+def load_file(file_name: str) -> dict:
+  with open(file_name, 'r', encoding='utf-8') as files:
+    loaded_file = json.load(files)
+  return loaded_file
+
+# ------ 儲存json檔案 ------
+def save_file(file_name: str, data) -> None:
+  with open(file_name, 'w', encoding='utf-8') as file:
+    json.dump(data, file, indent=4, ensure_ascii=False)
+
+# ------ 設定 ------
+setting = load_file('settings.json')
   
 SHORT_URL_KEY = setting['key']
 URL_ROOT = setting['url_root']
 
 unichr = chr
 
+# ------ 內建縮網址 ------
 def short_repl_it_url(url, key):
   urla = is_string_an_url(url)
   if urla is None or urla == '':
     return 'error'
   urla = f'{URL_ROOT}shorturl?key={key}&url={url}'
-  response = requests.get(urla).text
+  response = requests.post(urla).text
   return response
 
+# ------ 函式處理 ------
 def shorts_url(url, filename, image=None):
   if image is None:
     # shrtco_de_url = f'`{filename}` | {shrtco_de(url)}'
@@ -37,6 +50,7 @@ def shorts_url(url, filename, image=None):
     print('無法連上api')
     return f'`{filename}` | [連結點我]({url})'
 
+# ------ 去除unicode格式 ------
 def unquote_unicode(string, _cache={}):
   string = unquote(string)  # handle two-digit %hh components first
   parts = string.split(u'%u')
@@ -64,7 +78,7 @@ def unquote_unicode(string, _cache={}):
       append(part)
   return u''.join(r)
 
-
+# ------ 判斷字串是否為有效網址 ------
 def is_string_an_url(url_string: str) -> bool:
   regex = re.compile(
       r'^(?:http|ftp)s?://'  # http:// or https://
@@ -76,11 +90,11 @@ def is_string_an_url(url_string: str) -> bool:
       re.IGNORECASE)
   link = re.match(regex, url_string)
   if link is None:
-    return None
+    return False
   else:
     return link
 
-
+# ------ 新增公告點閱數 ------
 async def update_news_count(a):
   url = f"https://www.hchs.hc.edu.tw/ischool/widget/site_news/update_news_clicks.php?newsId={a}"
   try:
@@ -100,10 +114,9 @@ async def update_news_count(a):
     print("error:", e)
     return 'error'
 
-
+# ------ 偵測是否有重疊的公告------
 def detect_and_resolve_duplicates():
-  with open('news.json', 'r', encoding='utf-8') as news_file:
-    news = json.load(news_file)
+  news = load_file('news.json')
   value_counts = {}
   resolved_data = {}
 
@@ -124,19 +137,18 @@ def detect_and_resolve_duplicates():
           news.items(), key=lambda item: int(item[0]), reverse=True)
   }
 
-  with open('news.json', 'w') as file:
-    json.dump(resolved_data, file, indent=4)
-
+  save_file('news.json', resolved_data)
   return
 
+# ------ 將空格轉換為%20 ------
 async def encode_spaces_in_url(url):
     encoded_url = quote(url, safe=':/')
     return encoded_url
 
+# ------ 取得公告 ------
 async def get_anc(news_id, auto=None):
   try:
-    with open('news.json', 'r', encoding='utf-8') as news_file:
-      news = json.load(news_file)
+    news = load_file('news.json')
 
     if auto is None:
       # find all value
@@ -247,8 +259,7 @@ async def get_anc(news_id, auto=None):
           image_links.append(img_tag['src'])
           
     if auto is not None:
-      with open('news.json', 'w', encoding='utf-8') as news_file:
-        json.dump(news, news_file, ensure_ascii=False, indent=4)
+      save_file('news.json', news)
 
     embed = discord.Embed(title="爬蟲結果",
                           url=url,

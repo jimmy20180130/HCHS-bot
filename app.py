@@ -6,14 +6,12 @@ import urllib.parse
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 from threading import Thread
 from bs4 import BeautifulSoup
-import json
 import random
-from func import unquote_unicode, is_string_an_url
+from func import unquote_unicode, is_string_an_url, load_file, save_file
 
 app = Flask(__name__, template_folder='')
 
-with open('settings.json', 'r', encoding='utf-8') as settings_file:
-  setting = json.load(settings_file)
+setting = load_file('settings.json')
 
 SHORT_URL_KEY = setting['key']
 URL_ROOT = setting['url_root']
@@ -21,8 +19,7 @@ URL_ROOT = setting['url_root']
 
 # 用於存儲短網址的字典
 try:
-  with open('short_urls.json', 'r') as file:
-    short_urls = json.load(file)
+  short_urls = load_file('short_urls.json')
 except FileNotFoundError:
   short_urls = {}
 
@@ -209,7 +206,7 @@ def show_image():
 
 
 # 將短網址映射到原始URL
-@app.route('/shorturl', methods=['GET'])
+@app.route('/shorturl', methods=['POST'])
 def create_short_url():
   key = request.args.get('key')
   full_url = request.full_path  # 获取完整的请求路径，包括查询参数
@@ -246,8 +243,7 @@ def create_short_url():
   short_urls[short_key] = decoded_url
 
   # 寫入短網址映射到JSON文件
-  with open('short_urls.json', 'w') as file:
-    json.dump(short_urls, file, indent=4)
+  save_file('short_urls.json', short_urls)
 
   return f'{URL_ROOT}{short_key}'
 

@@ -28,16 +28,16 @@ SHORT_URL_KEY = setting['key']
 def short_repl_it_url(url, key):
   urla = is_string_an_url(url)
   if urla is None or urla == '':
-    return 'error'
+    return 'error,invalid_url'
   url = f'{URL_ROOT}shorturl?key={key}&url={url}'
-  response = requests.get(url).text
+  response = requests.post(url).text
   return response
 
 
 def surl_cc(url, filename=None):
   urla = is_string_an_url(url)
   if urla is None or urla == '':
-    return 'error'
+    return 'error,invalid_url'
   ssur_cc_key_list = [
       'nZ9ZzSa4LZ4o', 'Ed8nLSFpNVGB', 'YJimrVqxmExf', 'L9YRXGPugtet',
       'HR7RDeKNVgTX', 'RKqh9qcjDoe4', 'XoWtP22exnmy', 'GGFedvn7yhFZ',
