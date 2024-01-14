@@ -1,3 +1,5 @@
+# 取得學校網站的所有公告
+
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -13,9 +15,6 @@ def request(start, end):
         url = f"https://www.hchs.hc.edu.tw/ischool/public/news_view/show.php?nid={id}"
 
         response = requests.get(url)
-
-        # 如果回應狀態碼為200，表示網頁存在
-        
         html = response.text
         if html != 'The news is not existed!' and html != '該消息已封存，所以無法開啟！':
             soup = BeautifulSoup(html, 'lxml')
@@ -32,14 +31,10 @@ def request(start, end):
         
         while True:
             try:
-                # 在这里执行需要重复的操作
                 with open('news.json', 'w', encoding='utf-8') as json_file:
                     json.dump(result, json_file, ensure_ascii=False, indent=4)
-                
-                # 如果成功执行，退出循环
                 break
             except Exception as e:
-                # 如果发生异常，可以选择记录日志或打印错误消息
                 print(f"An error occurred: {str(e)}")
 
 t1 = threading.Thread(target=request, args=(1, 1000))  #建立執行緒

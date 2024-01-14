@@ -1,54 +1,89 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup as Soup
 from lxml import html
 import facebook_scraper as fs
 import re
 from func import load_file, save_file
 import asyncio
+import time
+import requests
+from urllib.parse import urlencode
 
-async def crawl_fb():
+def crawl_fb():
     settings = load_file('settings.json')
-    # ------ 設定要前往的網址 ------
-    url = 'https://mbasic.facebook.com'
-
-    # ------ 登入的帳號與密碼 ------
     username = settings['fb_username']
     password = settings['fb_pwd']
+    session = requests.Session()
+    headers = {
+        'Host': 'www.facebook.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate',
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1',
+        'Connection': 'close',
+    }
 
-    options = Options()
-    options.binary_location = "./webdriver"
-    options.add_argument("--headless=new")
-    driver = webdriver.Chrome(options=options)
-    driver.get(url)
-    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//*[@id="m_login_email"]')))
+    response = session.get('https://www.facebook.com/', headers=headers)
+    fr=response.cookies['fr']
+    sb=response.cookies['sb']
+    _datr=response.text.split('"_js_datr","')[1].split('"')[0]
+    _token=response.text.split('privacy_mutation_token=')[1].split('"')[0]
+    _jago=response.text.split('"jazoest" value="')[1].split('"')[0]
+    _lsd=response.text.split('name="lsd" value="')[1].split('"')[0]
 
-    elem = driver.find_element(by=By.ID, value="m_login_email")
-    elem.send_keys(username)
+    cookies = {
+        'fr': fr,
+        'sb': sb,
+        '_js_datr': _datr,
+        'wd': '717x730',
+        'dpr': '1.25',
+    }
 
-    elem = driver.find_element(by=By.XPATH, value='//*[@id="password_input_with_placeholder"]/input')
-    elem.send_keys(password)        
+    data = urlencode({
+        'jazoest': _jago,
+        'lsd': _lsd,
+        'email': username,
+        'login_source': 'comet_headerless_login',
+        'next': '',
+        'encpass': f'#PWD_BROWSER:0:{round(time.time())}:{password}',
+    })
 
-    elem.send_keys(Keys.RETURN)
-    await asyncio.sleep(5)
+    headers = {
+        'Host': 'www.facebook.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate',
+        'Referer': 'https://www.facebook.com/',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': str(len(data)),
+        'Origin': 'https://www.facebook.com',
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'same-origin',
+        'Sec-Fetch-User': '?1',
+    }
 
-    #檢查有沒有被擋下來
-    if len(driver.find_elements(by=By.XPATH, value="//*[contains(text(), '你的帳號暫時被鎖住')]")) > 0:
-        driver.find_elements(by=By.XPATH, value="//*[contains(text(), '是')]")[1].click()
+    response = session.post(f'https://www.facebook.com/login/?privacy_mutation_token={_token}', cookies=cookies, headers=headers, data=data)
+    print(response.cookies.get_dict())
 
-    # 切換頁面
-    spec_url = 'https://mbasic.facebook.com/profile.php?id=100090573221915&v=timeline'
-    driver.get(spec_url)
-    await asyncio.sleep(5)
-
+    if 'should_show_close_friend_badge":false' in response.text:
+        print('Login Success ')
+    else:
+        print(response.content)
+        
+    black_hchs_url = 'https://mbasic.facebook.com/profile.php?id=100090573221915&v=timeline'
+    response = session.get(black_hchs_url)
+    
     url_next = ''
     for i in range(3):
-        soup = Soup(driver.page_source, "lxml")
-        articles = soup.find_all('article')
+        soup = Soup(response.content, "lxml")
+        articles = soup.find_all('div', {'data-ft': True})
         # 貼文連結
         urls = []
         # 貼文圖片連結
@@ -58,7 +93,7 @@ async def crawl_fb():
         for article in articles:
             #每一篇貼文
             temp = []
-            article_tree = html.fromstring(str(article))
+            article_tree = html.fromstring(article)
             article_id = article.get('id')
             xpath_to_find1 = f'//*[@id="{article_id}"]/footer/div[2]/a[3]'
             xpath_to_find2 = f'//*[@id="{article_id}"]/div/div[2]/div[1]/a'
@@ -74,18 +109,19 @@ async def crawl_fb():
         # urls2 = [[貼文一], [貼文二], [貼文三 ]]
         for urla in urls2:
             for item in urla:
-                driver.get(item)
+                item_response = session.get(item)
                 item_index = urla.index(item)
-                await asyncio.sleep(5)
-                soup = Soup(driver.page_source, "lxml")
-                image = soup.find('div', class_='s')
-                image_tree = html.fromstring(str(image))
+                soup = Soup(item_response.content, "lxml")
+                image_tree1 = html.fromstring(item_response.text)
+                xpath_to_find = '/html/body/div/div/div[2]/div/div[1]/div'
+                image_id1 = image_tree1.xpath(xpath_to_find)[0].get('id')
+                image = soup.find('div', id=image_id1)
+                image_tree = html.fromstring(image)
                 image_id = image.get('id')
                 xpath_to_find = f'//*[@id="{image_id}"]/div/div[1]/div/div[1]/div/img'
                 elements = image_tree.xpath(xpath_to_find)
                 for element in elements:
                     urla[item_index] = element.get('src')
-                await asyncio.sleep(3)
 
         posts = fs.get_posts(
             post_urls=urls3,
@@ -123,20 +159,16 @@ async def crawl_fb():
 
         if i == 0:
             url = 'https://mbasic.facebook.com/profile.php?id=100090573221915&v=timeline'
-            driver.get(url)
-            await asyncio.sleep(3)
+            response = session.get(url)   
             read_more_xpath = '/html/body/div/div/div[2]/div/div[1]/div[3]/div[2]/div/div[1]/a'
-            buttons = html.fromstring(str(driver.page_source)).xpath(read_more_xpath)
+            buttons = html.fromstring(response.content).xpath(read_more_xpath)
             for button in buttons:
                 url_next= button.get('href')
-            driver.get('https://mbasic.facebook.com' + url_next)
-            await asyncio.sleep(3)
+            response = session.get('https://mbasic.facebook.com' + url_next)
         else:
-            driver.get('https://mbasic.facebook.com' + url_next)
-            await asyncio.sleep(3)
+            response = session.get('https://mbasic.facebook.com' + url_next)
             read_more_xpath = '/html/body/div/div/div[1]/div/table/tbody/tr/td/div/div[1]/a'
-            buttons = html.fromstring(driver.page_source).xpath(read_more_xpath)
+            buttons = html.fromstring(response.content).xpath(read_more_xpath)
             for button in buttons:
                 url_next= button.get('href')
-            driver.get('https://mbasic.facebook.com' + url_next)
-            await asyncio.sleep(3)
+            response = session.get('https://mbasic.facebook.com' + url_next)

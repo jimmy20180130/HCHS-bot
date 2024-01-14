@@ -7,3 +7,4 @@ validators==0.22.0
 lxml
 facebook-scraper @ git+https://github.com/seabnavin19/facebook-scraper.git
 selenium==4.11.2
+webdriver-manager

@@ -9,6 +9,7 @@ import asyncio
 import tracemalloc
 from func import is_string_an_url, update_news_count, detect_and_resolve_duplicates, get_anc, load_file, save_file
 from url_shortener import surl_cc, short_repl_it_url
+from app import generate_unique_short_key
 from fb_scraper import crawl_fb
 import time
 import threading
@@ -109,6 +110,24 @@ async def get_post_id(ctx: discord.AutocompleteContext):
         autocomplete=discord.utils.basic_autocomplete(get_post_id),
         requried=True)
 async def find_hchs(ctx, 貼文id, show_full_comments: Option(name='顯示完整留言', description='是否顯示完整的留言', choices=['是', '否'], required=False)):
+  def short_urll(url: str) -> None:
+    shorted_urls = load_file('short_urls.json')
+    existing_short_key = next(
+      (k for k, v in shorted_urls.items() if v == url), None)
+    if existing_short_key:
+      return f'{URL_ROOT}{existing_short_key}'
+    else:
+      # 生成唯一的短網址的key
+      short_key = generate_unique_short_key()
+
+      # 將短網址映射到原始URL
+      shorted_urls[short_key] = url
+
+      # 寫入短網址映射到JSON文件
+      save_file('short_urls.json', shorted_urls)
+
+      return f'{URL_ROOT}{short_key}'
+    
   all_posts = load_file('black_hchs.json')
   post_id = 貼文id
   reactions = all_posts[post_id]['reactions']
@@ -136,11 +155,11 @@ async def find_hchs(ctx, 貼文id, show_full_comments: Option(name='顯示完整
   def format_comment(comment):
     time = comment["comment_time"]
     commenter_name = comment["commenter_name"]
-    commenter_url = short_repl_it_url(comment["commenter_url"], SHORT_URL_KEY)
+    commenter_url = short_urll(comment["commenter_url"])
     comment_text = comment["comment_text"]
-    comment_url = short_repl_it_url(comment["comment_url"], SHORT_URL_KEY)
+    comment_url = short_urll(comment["comment_url"])
     if comment["comment_image"] is not None:
-      comment_image = short_repl_it_url(comment["comment_image"], SHORT_URL_KEY)
+      comment_image = short_urll(comment["comment_image"])
     comment_reply = comment['replies']
 
     reactions_mapping = {
@@ -169,13 +188,15 @@ async def find_hchs(ctx, 貼文id, show_full_comments: Option(name='顯示完整
       for items in comment_reply:
         time1 = items["comment_time"]
         commenter_name1 = items["commenter_name"]
-        commenter_url1 = short_repl_it_url(items["commenter_url"], SHORT_URL_KEY)
+        commenter_url1 = short_urll(items["commenter_url"])
         comment_text1 = items["comment_text"]
-        comment_url1 = short_repl_it_url(items["comment_url"], SHORT_URL_KEY)
+        comment_url1 = short_urll(items["comment_url"])
+        
         if items["comment_image"] is not None:
-          comment_image1 = short_repl_it_url(items["comment_image"], SHORT_URL_KEY)
+          comment_image1 = short_urll(items["comment_image"])
           image_text = f'  ([圖片]({comment_image1}))'
         reply_text = f'\n╚═ ({time1}) [{commenter_name1}]({commenter_url1}): [{comment_text1}]({comment_url1})'
+        
         if items["comment_image"] is not None:
           reply_text += image_text
 
@@ -227,8 +248,7 @@ async def find_hchs(ctx, 貼文id, show_full_comments: Option(name='顯示完整
     await ctx.respond(embed=embed)
   else:
     await ctx.respond('找不到貼文')
-
-
+    
 @bot.command(name="關於機器人", description="黑色麻中ㄐㄐ人")
 async def about_me(ctx):
   values='這個資訊比神奇的海螺還神奇所以你點到這裡幹嘛?'
@@ -365,8 +385,7 @@ async def set_channel(ctx, 公告頻道: Option(discord.TextChannel, '你要公�
 
 @anc_notify.command(name="移除頻道", description="移除新公告發送頻道")
 @commands.has_permissions(administrator=True)
-async def remove_channel(ctx, 公告頻道: Option(discord.TextChannel,
-                                           '你要公告定期發送的頻道')):
+async def remove_channel(ctx, 公告頻道: Option(discord.TextChannel, '你要公告定期發送的頻道')):
   try:
     setting = load_file('settings.json')
 

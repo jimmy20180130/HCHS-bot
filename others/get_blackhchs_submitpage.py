@@ -1,3 +1,5 @@
+# 取得 https://submit.crush.ninja/116761461339363 上面提交的貼文
+
 import json
 import requests
 from bs4 import BeautifulSoup
